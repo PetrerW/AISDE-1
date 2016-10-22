@@ -23,8 +23,14 @@ public int algorytmPrima()
             //Bedziemy szukac najtanszych krawedzi, ktore spelniaja zalozenia algorytmu Prima, czyli: jeden wierzcholek krawedzi nalezy do drzewa, a drugi nie.
             //
             //Najtansza krawedź jest pierwsza bo Lista będzie posortowana      
-           
-//Dwa konce lacza o najtanszej wadze oznaczamy jako odwiedzone
+
+           //~Piotrek - but causes an error(referencing to null)
+            krawedzie[0].Wezel1.Odwiedzony = true;
+            krawedzie[0].Wezel2.Odwiedzony = true;
+
+            Console.WriteLine(krawedzie[0].Wezel1.Odwiedzony);
+            Console.WriteLine(wezly[0].Odwiedzony);
+            //Dwa konce lacza o najtanszej wadze oznaczamy jako odwiedzone
             wezly[krawedzie[0].wezel1-1].Odwiedzony = true;
             wezly[krawedzie[0].wezel2-1].Odwiedzony = true;
 
