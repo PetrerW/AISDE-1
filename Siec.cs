@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,18 +112,30 @@ public int algorytmFloyda()
         //Odczytuje plik z miejsca wskazanego przez uzytkownika
         public void wczytaj_dane(string plik)
         {
+
+
+            //Zapisuje do tablicy caly plik.
+            //Jeden wiersz to jedna komorka tablicy.
+            //~Piotrek      - uzywam petli foreach i dodaje w niej warunek zignorowania wszystkich linii,
+            //~Piotrek      ktore zaczynaja sie od "#"
+
+            List<string> dane_z_pliku = new List<string>();
+
+            foreach (var linia in File.ReadAllLines(plik))
+            {
+                if (linia.StartsWith("#"))
+                    continue; //Pomijamy linie zaczynające się od "#"
+                else
+                    dane_z_pliku.Add(linia);
+            }
+
+            string[] dane = dane_z_pliku.ToArray(); //Konwersja do postaci tablicowej
             
-          
-                //Zapisuje do tablicy caly plik.
-                //Jeden wiersz to jedna komorka tablicy.
-                string[] dane = File.ReadAllLines(plik);
+            //~Piotrek      LICZBA WEZLOW
             //To co sie tu dzieje pozwala na podzial i zapis fragmentow tekstu ktory jest oddzielony spacja
                 string[] liczbyDane = dane[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             //wedlug wzorcowego pliku w pierwszej lini trzecim elementem bedzie liczba wezlow, ktore nalezy zapisac.
                 liczbaWezlow = Int32.Parse(liczbyDane[2]);
-           
-
-           
 
             for (int i = 0; i < liczbaWezlow; i++)
             {
@@ -138,27 +150,28 @@ public int algorytmFloyda()
                 }
                 catch (Exception)
                 {
-
+                    Console.WriteLine("Problem przy wczytywaniu danych (wezly)");
                 }
             }
 
+                //~Piotrek      LICZBA LACZY
                 liczbyDane = dane[liczbaWezlow+1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 liczbaLaczy = Int32.Parse(liczbyDane[2]);
 
-                for (int j = 0; j < liczbaLaczy; j++)
+            for (int j = 0; j < liczbaLaczy; j++)
                 {
 
                     try
                     {
-                    //Analogicznie jak wezly jednak do indekcowania uzywam wiadomosci o liczbie wersow ktore byly wyzej, aby zapisywac kolejne dane
+                    //Analogicznie jak wezly jednak do indeksowania uzywam wiadomosci o liczbie wersow ktore byly wyzej, aby zapisywac kolejne dane
 
-                        liczbyDane = dane[(liczbaWezlow+2+ j)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        liczbyDane = dane[(liczbaWezlow+2+j)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                         krawedzie.Add(new Lacze() { idKrawedzi = Int32.Parse(liczbyDane[0]), wezel1 = Int32.Parse(liczbyDane[1]), wezel2 = Int32.Parse(liczbyDane[2]) });
                     }
                     catch (Exception)
                     {
-
+                        Console.WriteLine("Problem przy wczytywaniu danych (krawedzie)");
                     }
                 }
           //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
@@ -183,7 +196,7 @@ public int algorytmFloyda()
                 int obecneMiejsce = liczbaWezlow + liczbaLaczy + 3;
                 for (; obecneMiejsce < dane.Length; obecneMiejsce++)
                 {
-                    liczbyDane = dane[(obecneMiejsce)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    liczbyDane = dane[obecneMiejsce].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     sciezki.Add(new Sciezka() { wezel1 = Int32.Parse(liczbyDane[0]), wezel2 = Int32.Parse(liczbyDane[1]) });
                 }
                 algorytmFloyda();
