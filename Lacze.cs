@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,12 @@ namespace ConsoleApplication8
         protected int identyfikatorKrawedzi;
         protected int wezelpierwszy;
         protected int wezeldrugi;
+
+        //~Piotrek 
+        protected Wezel WezelPierwszy;
+        protected Wezel WezelDrugi;
+        //
+
         protected float waga;
 
         public int idKrawedzi
@@ -18,6 +24,20 @@ namespace ConsoleApplication8
             get { return identyfikatorKrawedzi; }
             set { identyfikatorKrawedzi = value; }
         }
+
+        //~Piotrek
+        public Wezel Wezel1
+        {
+            get { return WezelPierwszy; }
+            set { WezelPierwszy = value; }
+        }
+
+        public Wezel Wezel2
+        {
+            get { return WezelDrugi; }
+            set { WezelDrugi = value; }
+        }
+        //
 
         public int wezel1
         {
