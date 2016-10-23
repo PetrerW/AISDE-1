@@ -24,21 +24,19 @@ public int algorytmPrima()
             //
             //Najtansza krawedź jest pierwsza bo Lista będzie posortowana      
 
-           //~Piotrek - but causes an error(referencing to null)
+           //~Piotrek
             krawedzie[0].Wezel1.Odwiedzony = true;
             krawedzie[0].Wezel2.Odwiedzony = true;
 
-            Console.WriteLine(krawedzie[0].Wezel1.Odwiedzony);
-            Console.WriteLine(wezly[0].Odwiedzony);
             //Dwa konce lacza o najtanszej wadze oznaczamy jako odwiedzone
-            wezly[krawedzie[0].wezel1-1].Odwiedzony = true;
-            wezly[krawedzie[0].wezel2-1].Odwiedzony = true;
+            //wezly[krawedzie[0].wezel1-1].Odwiedzony = true;
+            //wezly[krawedzie[0].wezel2-1].Odwiedzony = true;
 
 //Sa to dwa konce najtanszej krawedzi
             int liczbaOdwiedzonychWezlow = 2;
             int najlepszeLacze=0;
             int koniec = 0;
-            int k = 1;
+            int k = 0;
 
             
             /*krawedzie[1].Waga = 7;
@@ -62,12 +60,22 @@ public int algorytmPrima()
                     //Jeden z wierzcholkow musi byc nalezec do drzewa drugi-nie. Sprawdzam czy ten warunek zachodzi. 
                     //Odwoluje sie do wlasnosci klasy Wezel "Odwiedzony". Numer indeksu pomniejszony o 1 gdyz ID zaczyna sie od 1 a indeksowanie od 0
                     //Pierwsze poloczenie ktore spelnia warunki algorytmu zapisuje jako najlepsze po przez zapisanie indeksu do tego poloczenia.
-                    if ((wezly[krawedzie[k].wezel1 - 1].Odwiedzony == true && wezly[krawedzie[k].wezel2 - 1].Odwiedzony == false) || (wezly[krawedzie[k].wezel1 - 1].Odwiedzony == false && wezly[krawedzie[k].wezel2 - 1].Odwiedzony == true))
+                    
+                    /*if ((wezly[krawedzie[k].wezel1 - 1].Odwiedzony == true && wezly[krawedzie[k].wezel2 - 1].Odwiedzony == false) || (wezly[krawedzie[k].wezel1 - 1].Odwiedzony == false && wezly[krawedzie[k].wezel2 - 1].Odwiedzony == true))
                     {
                         najlepszeLacze = k;
 
                         koniec = 1;
 
+                    }
+                    k++; */
+
+                    //'^' to XOR - albo jedno, albo drugie prawdziwe. https://pl.wikipedia.org/wiki/Alternatywa_wykluczaj%C4%85ca
+
+                    if (krawedzie[k].Wezel1.Odwiedzony == true ^ krawedzie[k].Wezel2.Odwiedzony == true)
+                    {
+                        najlepszeLacze = k;
+                        koniec = 1;
                     }
                     k++;
 
@@ -75,10 +83,11 @@ public int algorytmPrima()
 
                 for (int i=1; i<liczbaLaczy; i++)
                 {
-                   
-                    //jeden z wierzcholkow musi byc nalezec do drzewa drugi-nie
+
+                    //jeden z wierzcholkow musi nalezec do drzewa drugi-nie
                     //Przeszukuje liste krawedzi w poszukiwaniu takich, ktore spelniaja warunki i maja mniejsza wage niz dotychczas najlepsze lacze
-                    if ((wezly[krawedzie[i].wezel1 - 1].Odwiedzony==true && wezly[krawedzie[i].wezel2 - 1].Odwiedzony == false) || (wezly[krawedzie[i].wezel1 - 1].Odwiedzony == false && wezly[krawedzie[i].wezel1 - 1].Odwiedzony == true))
+                    //if ((wezly[krawedzie[i].wezel1 - 1].Odwiedzony==true && wezly[krawedzie[i].wezel2 - 1].Odwiedzony == false) || (wezly[krawedzie[i].wezel1 - 1].Odwiedzony == false && wezly[krawedzie[i].wezel1 - 1].Odwiedzony == true))
+                    if (krawedzie[i].Wezel1.Odwiedzony == true ^ krawedzie[i].Wezel2.Odwiedzony == true)
                     {
                         if (krawedzie[i].Waga < krawedzie[najlepszeLacze].Waga)
                         {
@@ -88,8 +97,12 @@ public int algorytmPrima()
                      
                 }
                 //Wezly nalezace do krawedzi oznaczam jako odwiedzone
+                krawedzie[najlepszeLacze].Wezel1.Odwiedzony = true;
+                krawedzie[najlepszeLacze].Wezel1.Odwiedzony = true;
+                /*
                 wezly[krawedzie[najlepszeLacze].wezel1-1].Odwiedzony = true;
                 wezly[krawedzie[najlepszeLacze].wezel2-1].Odwiedzony = true;
+                */
                 Console.WriteLine(krawedzie[najlepszeLacze].idKrawedzi);
 
                 liczbaOdwiedzonychWezlow++;
@@ -134,8 +147,8 @@ public int algorytmFloyda()
                 else
                     dane_z_pliku.Add(linia);
             }
-
-            string[] dane = dane_z_pliku.ToArray(); //Konwersja do postaci tablicowej
+            //~Piotrek          Konwersja do postaci tablicowej
+            string[] dane = dane_z_pliku.ToArray();
             
             //~Piotrek      LICZBA WEZLOW
             //To co sie tu dzieje pozwala na podzial i zapis fragmentow tekstu ktory jest oddzielony spacja
@@ -173,14 +186,21 @@ public int algorytmFloyda()
 
                         liczbyDane = dane[(liczbaWezlow+2+j)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        krawedzie.Add(new Lacze() { idKrawedzi = Int32.Parse(liczbyDane[0]), wezel1 = Int32.Parse(liczbyDane[1]), wezel2 = Int32.Parse(liczbyDane[2]) });
+                    //~Daniel       krawedzie.Add(new Lacze( Int32.Parse(liczbyDane[0]), Int32.Parse(liczbyDane[1]), Int32.Parse(liczbyDane[2]) ));
+                    //~Piortek      - Dodaje juz teraz do danej krawedzi Wezly, korzystajac z tego, ze sa one w pliku wejsciowym podawane po kolei, wiec
+                    //~Piotrek        ich numery indeksu w liscie 'wezly' sa rowne ich numerkowi na pliku wejsciowym minus 1 (zaczynamy od 0)
+                    //~Piotrek      - Dzieki temu unikam wielokrotnych petli for! #profit
+
+                    krawedzie.Add(new Lacze(Int32.Parse(liczbyDane[0]), 
+                            wezly[Int32.Parse(liczbyDane[1])-1], wezly[Int32.Parse(liczbyDane[2]) - 1]));
                     }
                     catch (Exception)
                     {
                         Console.WriteLine("Problem przy wczytywaniu danych (krawedzie)");
                     }
                 }
-          //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
+            //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
+            Console.WriteLine(krawedzie[0].idKrawedzi);
 
             string[] infoDane = dane[liczbaLaczy+liczbaWezlow+2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             algorytm = infoDane[2];
