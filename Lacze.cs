@@ -19,6 +19,20 @@ namespace ConsoleApplication8
 
         protected float waga;
 
+        public Lacze(int _identyfikatorKrawedzi, int _wezelpierwszy, int _wezeldrugi )
+        {
+            this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
+            this.wezelpierwszy = _wezelpierwszy;
+            this.wezeldrugi = _wezeldrugi;
+        }
+
+        public Lacze(int _identyfikatorKrawedzi, Wezel _WezelPierwszy, Wezel _WezelDrugi)
+        {
+            this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
+            this.WezelPierwszy = _WezelPierwszy;
+            this.WezelDrugi = _WezelDrugi;
+        }
+
         public int idKrawedzi
         {
             get { return identyfikatorKrawedzi; }
