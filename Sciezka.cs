@@ -8,6 +8,11 @@ namespace ConsoleApplication8
 {
     class Sciezka
     {
+        //~Piotrek 
+        protected Wezel WezelPierwszy;
+        protected Wezel WezelDrugi;
+        //
+
         protected int wezelpierwszy;
         protected int wezeldrugi;
 
@@ -22,5 +27,19 @@ namespace ConsoleApplication8
             get { return wezeldrugi; }
             set { wezeldrugi = value; }
         }
+
+        //~Piotrek
+        public Wezel Wezel1
+        {
+            get { return WezelPierwszy; }
+            set { WezelPierwszy = value; }
+        }
+
+        public Wezel Wezel2
+        {
+            get { return WezelDrugi; }
+            set { WezelDrugi = value; }
+        }
+        //
     }
 }
