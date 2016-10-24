@@ -36,7 +36,7 @@ public int algorytmPrima()
             int liczbaOdwiedzonychWezlow = 2;
             int najlepszeLacze=0;
             int koniec = 0;
-            int k = 0;
+            int k = 1;
 
             
             /*krawedzie[1].Waga = 7;
