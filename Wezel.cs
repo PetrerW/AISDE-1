@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace ConsoleApplication8
         protected int identyfikatorWezla;
         protected int wspolrzednaX;
         protected int wspolrzednaY;
-        protected int doMniePrzez;
+        protected Wezel doMniePrzez;
         protected float etykieta;
         protected bool odwiedzony;
         protected List<int> doprowadzoneKrawedzie = new List<int>();
@@ -22,7 +22,7 @@ namespace ConsoleApplication8
             identyfikatorWezla = 0;
             wspolrzednaX = 0;
             wspolrzednaY = 0;
-            doMniePrzez = identyfikatorWezla;
+            doMniePrzez = null;
             etykieta = 0;
             odwiedzony = false;
         }
@@ -32,7 +32,7 @@ namespace ConsoleApplication8
             this.identyfikatorWezla = identyfikatorWezla;
             this.wspolrzednaX = wspolrzednaX;
             this.wspolrzednaY = wspolrzednaY;
-            doMniePrzez = identyfikatorWezla;
+           
         }
 
         public int idWezla
@@ -61,7 +61,7 @@ namespace ConsoleApplication8
     
 
     
-        public int NajlepiejPrzez
+        public Wezel NajlepiejPrzez
         {
             get { return doMniePrzez; }
             set { doMniePrzez = value; }
