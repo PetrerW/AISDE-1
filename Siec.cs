@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,7 +51,8 @@ public int algorytmPrima()
 
             do
             {
-               
+                
+               //Petla do-While nie bedzie sprawdzala wykorzystanych juz krawedzi.
                 int k = wykorzystaneKrawedzie;
                 //za kazdym razem szukam najlepszego wierzcholka ktory pasuje do warunkow algorytmu 
                 do
@@ -68,7 +69,7 @@ public int algorytmPrima()
                     k++;
 
                 } while (koniec == 0);
-
+//Petla nie sprawdza juz wykorzystanych Krawedzi
                 for (int i=wykorzystaneKrawedzie; i<liczbaLaczy; i++)
                 {
 
@@ -89,7 +90,9 @@ public int algorytmPrima()
 
                 Console.WriteLine(krawedzie[najlepszeLacze].idKrawedzi);
 
-                
+             //Tu jest to usprawnienie
+             //Po sprawdzeniu krawedzi przesuwam ja na miejsce zalezace od ilosci sprawdzonych krawedzi
+             //Gdy kolejny raz wchodzi do petli for to nie sprawdza juz tej krawedzi, mniej razy chodzi petla.   
                 if(najlepszeLacze!=wykorzystaneKrawedzie)
                 {
                     pomocnicze = krawedzie[najlepszeLacze];
@@ -118,6 +121,8 @@ public int algorytmPrima()
             int najtanszyWezel = 0;
             int koniec=0;
             int k=0;
+            Wezel pomocniczy = new Wezel();
+
             krawedzie[1].Waga = 7;
             krawedzie[2].Waga = 1;
             krawedzie[3].Waga = 3;
@@ -128,6 +133,12 @@ public int algorytmPrima()
             krawedzie[8].Waga = 3;
             krawedzie[9].Waga = 5;
 
+            /*
+            Dla potrzeb algorytmu dodalem w kasie Wezel trzy 2 nowe zmienne i liste przechowujaca indeksy krawedzi, ktore sa doprowadzone do konkretnego Wezla.
+            Dwie zmienne to : etykieta, czyli najtanszy koszt dotarcia do wierzcholka oraz zmienna dzieki ktorej wiem przez ktory wierzcholek nalezy do tego punktu isc.
+
+            Pierwszy wierzcholek sciezki ma etykiete 0 a pozostale na nieskonczonosc, ktora zdefiniowalem jako 1000.
+            */
             for (int i=0; i<liczbaWezlow; i++)
             {
                 wezly[i].Etykieta = INF;
@@ -136,17 +147,21 @@ public int algorytmPrima()
 
             do
             {
+                //wybieram pierwszy dowolny wezel, ktory posluzy mi jako odnosnik do wyszukiwania najkorzystniejszego wezla.
                 do
                 {
+
                     if (wezly[k].Odwiedzony == false)
                     {
                         najtanszyWezel = k;
                         koniec = 1;
                     }
                     k++;
+
                 } while (koniec == 0);
 
-                for(int i=0; i<liczbaWezlow; i++)
+                //Poszukiwanie najtanszego
+                for(int i=liczbaOdwiedzonychWezlow; i<liczbaWezlow; i++)
                 {
                     if (wezly[i].Odwiedzony == false)
                     {
@@ -156,17 +171,21 @@ public int algorytmPrima()
                         }
                     }
                 }
-                //
+                //Tu wykorzystuje liste ktora stworzylem w klasie wezel po to, aby nie szukac wsrod wszystkich krawedzi. Wiem z gory ktore krawedzie musze przegladnac.
+                //Wiem jakich mam sasiadow
                 foreach (int krawedz in wezly[najtanszyWezel].listaKrawedzi  )
                 {
+                    //Jezeli wybrany jest najtanszy wezel to sprawdzam, ktory jest to wezel w krawedzi. WezelPierwszy, czy WezelDrugi
                     if(wezly[najtanszyWezel].idWezla==krawedzie[krawedz-1].Wezel1.idWezla)
                     {
+                        //Jezeli ten sasiad byl juz przegladany to nie bedzie dla niego lepszego polonczenia, jest "skreslony"
                         if(krawedzie[krawedz - 1].Wezel2.Odwiedzony==false)
                         {
                             if (krawedzie[krawedz - 1].Wezel2.Etykieta > (krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel1.Etykieta))
                             {
                                 krawedzie[krawedz - 1].Wezel2.Etykieta = krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel1.Etykieta;
-                                krawedzie[krawedz - 1].Wezel2.NajlepiejPrzez = wezly[najtanszyWezel].idWezla;
+                                //Jezeli to polonczenie okazuje sie byc najkorzystniejsze to zmieniam Wezel przez ktory droga jest najtansza
+                                krawedzie[krawedz - 1].Wezel2.NajlepiejPrzez = wezly[najtanszyWezel];
                             }
                         }
                     }
@@ -177,7 +196,7 @@ public int algorytmPrima()
                             if (krawedzie[krawedz - 1].Wezel1.Etykieta > (krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel2.Etykieta))
                             {
                                 krawedzie[krawedz - 1].Wezel1.Etykieta = krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel2.Etykieta;
-                                krawedzie[krawedz - 1].Wezel1.NajlepiejPrzez = wezly[najtanszyWezel].idWezla;
+                                krawedzie[krawedz - 1].Wezel1.NajlepiejPrzez = wezly[najtanszyWezel];
                             }
                         }
                     }
@@ -185,22 +204,38 @@ public int algorytmPrima()
                 }
 
                 wezly[najtanszyWezel].Odwiedzony = true;
+               
+                // Przejmuje referencje do obiektu, usuwam najkorzystniejszy wezel z jego miejsca w liscie i umieszczam na miejscach, gdzie nie bede juz sprawdzal
+                //Pętle for beze zaczynal dla i= liczbieOdwiedzonychWezlow czyli petla ich już nie obejmuje, czyli petla krazy mniejszą ilosc razy.
+                if (najtanszyWezel != liczbaOdwiedzonychWezlow)
+                {
+                    pomocniczy = wezly[najtanszyWezel];
+                    //usuwanie z listy
+                    wezly.RemoveAt(najtanszyWezel);
+                    //dodawanie do listy na miejscu wskazanym 
+                    wezly.Insert(liczbaOdwiedzonychWezlow, pomocniczy);
+
+                }
+
                 liczbaOdwiedzonychWezlow++;
+
 
 
             } while (liczbaOdwiedzonychWezlow != (liczbaWezlow-1));
 
+            //Tutaj sprawdzalem czy wypisuje jak trzeba sciezke
+
             Console.WriteLine(sciezki[0].Wezel2.idWezla);
             
-            int zmienna = sciezki[0].Wezel2.NajlepiejPrzez;
+            Wezel zmienna = sciezki[0].Wezel2.NajlepiejPrzez;
            
-            Console.WriteLine(zmienna);
+            Console.WriteLine(zmienna.idWezla);
             
-            while (wezly[zmienna - 1].NajlepiejPrzez != sciezki[0].Wezel1.idWezla) 
+            while (zmienna.NajlepiejPrzez != sciezki[0].Wezel1) 
             {
-                
-                    zmienna = wezly[zmienna - 1].NajlepiejPrzez;
-                    Console.WriteLine(zmienna);             
+
+                zmienna = zmienna.NajlepiejPrzez;
+                    Console.WriteLine(zmienna.idWezla);             
 
             }
             Console.WriteLine(sciezki[0].Wezel1.idWezla);
@@ -273,6 +308,8 @@ public int algorytmFloyda()
                     wezly[Int32.Parse(liczbyDane[1])-1].wprowadzenieIndeksowKrawedzi(Int32.Parse(liczbyDane[0]));
                     wezly[Int32.Parse(liczbyDane[2])-1].wprowadzenieIndeksowKrawedzi(Int32.Parse(liczbyDane[0]));
 
+                    
+
 
 
 
@@ -282,7 +319,8 @@ public int algorytmFloyda()
 
                     }
                 }
-          //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
+           
+            //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
 
             string[] infoDane = dane[liczbaLaczy+liczbaWezlow+2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             algorytm = infoDane[2];
