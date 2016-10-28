@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,30 +173,30 @@ public int algorytmPrima()
                 }
                 //Tu wykorzystuje liste ktora stworzylem w klasie wezel po to, aby nie szukac wsrod wszystkich krawedzi. Wiem z gory ktore krawedzie musze przegladnac.
                 //Wiem jakich mam sasiadow
-                foreach (int krawedz in wezly[najtanszyWezel].listaKrawedzi  )
+                foreach (Lacze krawedz in wezly[najtanszyWezel].listaKrawedzi  )
                 {
                     //Jezeli wybrany jest najtanszy wezel to sprawdzam, ktory jest to wezel w krawedzi. WezelPierwszy, czy WezelDrugi
-                    if(wezly[najtanszyWezel].idWezla==krawedzie[krawedz-1].Wezel1.idWezla)
+                    if(wezly[najtanszyWezel].idWezla==krawedz.Wezel1.idWezla)
                     {
                         //Jezeli ten sasiad byl juz przegladany to nie bedzie dla niego lepszego polonczenia, jest "skreslony"
-                        if(krawedzie[krawedz - 1].Wezel2.Odwiedzony==false)
+                        if(krawedz.Wezel2.Odwiedzony==false)
                         {
-                            if (krawedzie[krawedz - 1].Wezel2.Etykieta > (krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel1.Etykieta))
+                            if (krawedz.Wezel2.Etykieta > (krawedz.Waga + krawedz.Wezel1.Etykieta))
                             {
-                                krawedzie[krawedz - 1].Wezel2.Etykieta = krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel1.Etykieta;
+                                krawedz.Wezel2.Etykieta = krawedz.Waga + krawedz.Wezel1.Etykieta;
                                 //Jezeli to polonczenie okazuje sie byc najkorzystniejsze to zmieniam Wezel przez ktory droga jest najtansza
-                                krawedzie[krawedz - 1].Wezel2.NajlepiejPrzez = wezly[najtanszyWezel];
+                                krawedz.Wezel2.NajlepiejPrzez = wezly[najtanszyWezel];
                             }
                         }
                     }
                     else
                     {
-                        if (krawedzie[krawedz - 1].Wezel1.Odwiedzony == false)
+                        if (krawedz.Wezel1.Odwiedzony == false)
                         {
-                            if (krawedzie[krawedz - 1].Wezel1.Etykieta > (krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel2.Etykieta))
+                            if (krawedz.Wezel1.Etykieta > (krawedz.Waga + krawedz.Wezel2.Etykieta))
                             {
-                                krawedzie[krawedz - 1].Wezel1.Etykieta = krawedzie[krawedz - 1].Waga + krawedzie[krawedz - 1].Wezel2.Etykieta;
-                                krawedzie[krawedz - 1].Wezel1.NajlepiejPrzez = wezly[najtanszyWezel];
+                                krawedz.Wezel1.Etykieta = krawedz.Waga + krawedz.Wezel2.Etykieta;
+                                krawedz.Wezel1.NajlepiejPrzez = wezly[najtanszyWezel];
                             }
                         }
                     }
@@ -305,8 +305,8 @@ public int algorytmFloyda()
                     krawedzie.Add(new Lacze(Int32.Parse(liczbyDane[0]),
                         wezly[Int32.Parse(liczbyDane[1]) - 1], wezly[Int32.Parse(liczbyDane[2]) - 1]));
                     //Podaje dla obiektow klasy wezel nr ID krawedzi, ktore zostaly do niego doprowadzone
-                    wezly[Int32.Parse(liczbyDane[1])-1].wprowadzenieIndeksowKrawedzi(Int32.Parse(liczbyDane[0]));
-                    wezly[Int32.Parse(liczbyDane[2])-1].wprowadzenieIndeksowKrawedzi(Int32.Parse(liczbyDane[0]));
+                    wezly[Int32.Parse(liczbyDane[1])-1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0])-1]);
+                    wezly[Int32.Parse(liczbyDane[2])-1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0])-1]);
 
                     
 

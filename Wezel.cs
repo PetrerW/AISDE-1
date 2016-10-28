@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace ConsoleApplication8
         protected Wezel doMniePrzez;
         protected float etykieta;
         protected bool odwiedzony;
-        protected List<int> doprowadzoneKrawedzie = new List<int>();
+        protected List<Lacze> doprowadzoneKrawedzie = new List<Lacze>();
        
 
         public Wezel()
@@ -73,11 +73,11 @@ namespace ConsoleApplication8
             set { etykieta = value; }
         }
 
-        public void wprowadzenieIndeksowKrawedzi(int indeks)
+        public void wprowadzenieIndeksowKrawedzi(Lacze ktore)
         {
-            doprowadzoneKrawedzie.Add(indeks);
+            doprowadzoneKrawedzie.Add(ktore);
         }
-        public List<int> listaKrawedzi
+        public List<Lacze> listaKrawedzi
         {
             get { return doprowadzoneKrawedzie; }
         }
