@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication8
 {
- public   class Lacze
+    public class Lacze
     {
         protected int identyfikatorKrawedzi;
         protected int wezelpierwszy;
@@ -19,7 +19,7 @@ namespace ConsoleApplication8
 
         protected float waga;
 
-        public Lacze(int _identyfikatorKrawedzi, int _wezelpierwszy, int _wezeldrugi )
+        public Lacze(int _identyfikatorKrawedzi, int _wezelpierwszy, int _wezeldrugi)
         {
             this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
             this.wezelpierwszy = _wezelpierwszy;
