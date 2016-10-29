@@ -248,10 +248,10 @@ public int algorytmPrima()
             //tablica kosztow - zawiera koszt z wezla o identyfikatorze nr a do wezla nr b
             //Koszt dostania się z a do b to tablicaKosztow[a,b] przechowuje koszt dostania się z węzła a do węzła b
             int[,] tablicaKosztow = new int[liczbaWezlow, liczbaWezlow];
-            // tablica kierowania wezlami - zawiera referencję do najblizszego Wezla, przez który mamy się udać 
-            Wezel[,] tablicaKierowaniaWezlami = new Wezel[liczbaWezlow, liczbaWezlow];
-            // tablica kierowania krawedziami - zawiera referencje do Krawedzi, przez ktora udamy sie do najblizszego wezla zeby dalej isc dana sciezka
-            Lacze[,] tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
+            // tablica kierowania wezlami - zawiera ideks najblizszego Wezla, do ktorego nalezy sie udac
+            Wezel[,] tablicaKierowaniaWezlami = new int[liczbaWezlow, liczbaWezlow];
+            // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
+            Lacze[,] tablicaKierowaniaLaczami = new int[liczbaWezlow, liczbaWezlow];
             //Potrzebujemy niby polowy z tego zakresu, ale nie wiem czy nie bedzie wprowadzonych lacz skierowanych. W tym przypadku trzeba by znowu wykorzystac 
             // [liczbaWezlow, liczbaWezlow]
             // tablicaKierowaniaWezlami[a, b] zwroci najblizszy Wezel, przez ktory mamy przejsc idac z a do b
@@ -263,9 +263,11 @@ public int algorytmPrima()
             for (int i = 0; i<liczbaWezlow; i++)
                 for (int j = 0; j < liczbaWezlow; j++)
                 {
+                   if ( i == j )
+                      tablicaKosztow[i, j] = 0; //Koszt dojscia do samego siebie to 0
+                   else
                     tablicaKosztow[i, j] = INFINITY;
                 }
-            tablicaKosztow[0, 0] = 0; //Poczatkowy punkt ma wartosc rowna 0
 
             for (int k = 0; k < liczbaWezlow; k++)
                 for (int i = 0; i <= liczbaWezlow; i++)
