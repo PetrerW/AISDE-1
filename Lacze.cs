@@ -31,6 +31,8 @@ namespace ConsoleApplication8
             this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
             this.WezelPierwszy = _WezelPierwszy;
             this.WezelDrugi = _WezelDrugi;
+            this.wezelpierwszy = WezelPierwszy.idWezla;
+            this.wezeldrugi = WezelDrugi.idWezla;
         }
 
         public int idKrawedzi
