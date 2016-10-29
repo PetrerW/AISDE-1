@@ -261,22 +261,40 @@ namespace ConsoleApplication8
             Lacze[,] tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
             foreach (Lacze lacze in krawedzie)
             {
-                tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze; //przypisanie wartosci do tablicy. Odejmuje 1, bo na wejsciu numeracja wezlow zaczyna sie od 1
-                tablicaKierowaniaLaczami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze; //Z b do a tez idziemy przez dane lacze
+                if(tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] == null) //Jezeli jeszcze nic nie bylo tutaj, to przypisujemy wartosci
+                {
+                    tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze; //przypisanie wartosci do tablicy. Odejmuje 1, bo na wejsciu numeracja wezlow zaczyna sie od 1
+                    tablicaKierowaniaLaczami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze; //Z b do a tez idziemy przez dane lacze
 
-                tablicaKierowaniaWezlami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze.Wezel2; //Idac z wezla1 do wezla2 dostaniemy sie do wezla2
-                tablicaKierowaniaWezlami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze.Wezel1; //I vice versa
-            }
-            /* maly test
-            byte z = 1;
-            foreach (Lacze lacze in tablicaKierowaniaLaczami)
-            {
-                if (lacze == null)
-                    Console.WriteLine($"{z} null");
+                    tablicaKierowaniaWezlami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze.Wezel2; //Idac z wezla1 do wezla2 dostaniemy sie do wezla2
+                    tablicaKierowaniaWezlami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze.Wezel1; //I vice versa
+                }
                 else
-                    Console.WriteLine($"{z} {lacze.idKrawedzi}");
-                z++;
-            } */
+                {
+                    Lacze temp = tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1];
+                    if(temp.Waga > lacze.Waga) //Jesli dotychczasowa waga byla wieksza, podmieniamy. Jesli nie - nic nie robimy.
+                    {
+                        tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze; //przypisanie wartosci do tablicy. Odejmuje 1, bo na wejsciu numeracja wezlow zaczyna sie od 1
+                        tablicaKierowaniaLaczami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze; //Z b do a tez idziemy przez dane lacze
+
+                        tablicaKierowaniaWezlami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze.Wezel2; //Idac z wezla1 do wezla2 dostaniemy sie do wezla2
+                        tablicaKierowaniaWezlami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze.Wezel1; //I vice versa
+                    }
+                }
+                
+            }
+            // maly test
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    if (tablicaKierowaniaLaczami[i, j] == null)
+                        Console.Write($"[{i},{j}]: null\t");
+                    else
+                        Console.Write($"[{i},{j}]: {tablicaKierowaniaLaczami[i, j].idKrawedzi}\t");
+                }
+                Console.WriteLine();
+            }
 
             //Potrzebujemy niby polowy z tego zakresu, ale nie wiem czy nie bedzie wprowadzonych lacz skierowanych. W tym przypadku trzeba by znowu wykorzystac 
             // [liczbaWezlow, liczbaWezlow]
@@ -298,7 +316,7 @@ namespace ConsoleApplication8
                         tablicaKosztow[i, j] = INFINITY;
                 }
 
-            for (int k = 0; k < liczbaWezlow; k++)
+            for (int k = 0; k < liczbaWezlow; k++) //Tak jak na slajdzie wykladowym
                 for (int i = 0; i < liczbaWezlow; i++)
                     for (int j = 0; j < liczbaWezlow; j++)
                         if (tablicaKosztow[i, j] > tablicaKosztow[i, k] + tablicaKosztow[k, j])
@@ -307,7 +325,7 @@ namespace ConsoleApplication8
                             tablicaKierowaniaWezlami[i, j] = wezly[k]; //k-ty Wezel
                         }
 
-            for (int i = 0; i < liczbaWezlow; i++)
+            for (int i = 0; i < liczbaWezlow; i++) //Wyswietlanie tablic: kosztow i kierowania wezlami
             {
                 Console.WriteLine();
                 for (int j = 0; j < liczbaWezlow; j++)

@@ -8,6 +8,10 @@ namespace ConsoleApplication8
 {
     class Sciezka
     {
+        List<Lacze> krawedzieSciezki = new List<Lacze>();
+        List<Wezel> wezlySciezki = new List<Wezel>();
+        //krawedzieSciezki[0] to krawedz wychodzaca z wezlySciezki[0] i dochodzaca do wezlySciezki[1]
+
         //~Piotrek 
         protected Wezel WezelPierwszy;
         protected Wezel WezelDrugi;
@@ -15,6 +19,13 @@ namespace ConsoleApplication8
 
         protected int wezelpierwszy;
         protected int wezeldrugi;
+
+        public Sciezka wyznaczSciezke(Wezel Skad, Wezel Dokad)
+        {
+
+            return null;
+        }
+
 
         public int wezel1
         {
