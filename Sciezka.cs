@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,10 +20,18 @@ namespace ConsoleApplication8
         protected int wezelpierwszy;
         protected int wezeldrugi;
 
-        public Sciezka wyznaczSciezke(Wezel Skad, Wezel Dokad)
+        public Sciezka wyznaczSciezke(Wezel Skad, Wezel Dokad, Lacze[,] tablicaKierowaniaLaczami, Wezel[,] tablicaKierowaniaWezlami)
         {
+            wezlySciezki.Add(Skad);
+            if (Skad == Dokad)
+                return this;
+            else
+            {
+                krawedzieSciezki.Add(tablicaKierowaniaLaczami[Skad.idWezla - 1, Dokad.idWezla - 1]); //Pierwsza krawedz wychodzi z Skad
+                if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] == Dokad) //Sciezka z jedna krawedzia
+                    return this;
+            }
 
-            return null;
         }
 
 
