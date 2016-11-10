@@ -6,18 +6,54 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication8
 {
- public   class Lacze
+    public class Lacze
     {
         protected int identyfikatorKrawedzi;
         protected int wezelpierwszy;
         protected int wezeldrugi;
+
+        //~Piotrek 
+        protected Wezel WezelPierwszy;
+        protected Wezel WezelDrugi;
+        //
+
         protected float waga;
+
+        public Lacze(int _identyfikatorKrawedzi, int _wezelpierwszy, int _wezeldrugi)
+        {
+            this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
+            this.wezelpierwszy = _wezelpierwszy;
+            this.wezeldrugi = _wezeldrugi;
+        }
+
+        public Lacze(int _identyfikatorKrawedzi, Wezel _WezelPierwszy, Wezel _WezelDrugi)
+        {
+            this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
+            this.WezelPierwszy = _WezelPierwszy;
+            this.WezelDrugi = _WezelDrugi;
+            this.wezelpierwszy = WezelPierwszy.idWezla;
+            this.wezeldrugi = WezelDrugi.idWezla;
+        }
 
         public int idKrawedzi
         {
             get { return identyfikatorKrawedzi; }
             set { identyfikatorKrawedzi = value; }
         }
+
+        //~Piotrek
+        public Wezel Wezel1
+        {
+            get { return WezelPierwszy; }
+            set { WezelPierwszy = value; }
+        }
+
+        public Wezel Wezel2
+        {
+            get { return WezelDrugi; }
+            set { WezelDrugi = value; }
+        }
+        //
 
         public int wezel1
         {
