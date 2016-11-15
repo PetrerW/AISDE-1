@@ -20,19 +20,16 @@ namespace ConsoleApplication8
 
         public void ustawWagiLaczy()
         {
-
             krawedzie[0].Waga = 9;
             krawedzie[1].Waga = 8;
             krawedzie[2].Waga = 2;
             krawedzie[3].Waga = 2;
             krawedzie[4].Waga = 1;
             krawedzie[5].Waga = 10;
-            krawedzie[6].Waga = 4;
+            krawedzie[6].Waga = 2;
             krawedzie[7].Waga = 3;
             krawedzie[8].Waga = 10;
-            krawedzie[9].Waga = 8;
-
-
+            krawedzie[9].Waga = 5;
         }
 
         public int algorytmPrima()
@@ -255,7 +252,7 @@ namespace ConsoleApplication8
             //tablica kosztow - zawiera koszt z wezla o identyfikatorze nr a do wezla nr b
             //Koszt dostania się z a do b to tablicaKosztow[a,b] przechowuje koszt dostania się z węzła a do węzła b
             float[,] tablicaKosztow = new float[liczbaWezlow, liczbaWezlow];
-            // tablica kierowania wezlami - zawiera referencje do najblizszego Wezla, do ktorego nalezy sie udac w drodze z a do b
+            // tablica kierowania wezlami - zawiera referencje do Wezla, do ktorego nalezy sie udac w drodze z a do b
             Wezel[,] tablicaKierowaniaWezlami = new Wezel[liczbaWezlow, liczbaWezlow];
             // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
             Lacze[,] tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
@@ -272,7 +269,7 @@ namespace ConsoleApplication8
                 else
                 {
                     Lacze temp = tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1];
-                    if(temp.Waga > lacze.Waga) //Jesli dotychczasowa waga byla wieksza, podmieniamy. Jesli nie - nic nie robimy.
+                    if (temp.Waga > lacze.Waga) //Jesli dotychczasowa waga byla wieksza, podmieniamy. Jesli nie - nic nie robimy.
                     {
                         tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] = lacze; //przypisanie wartosci do tablicy. Odejmuje 1, bo na wejsciu numeracja wezlow zaczyna sie od 1
                         tablicaKierowaniaLaczami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze; //Z b do a tez idziemy przez dane lacze
@@ -281,30 +278,20 @@ namespace ConsoleApplication8
                         tablicaKierowaniaWezlami[lacze.wezel2 - 1, lacze.wezel1 - 1] = lacze.Wezel1; //I vice versa
                     }
                 }
-                
-            }
-            // maly test
-            for (int i = 0; i < liczbaWezlow; i++)
-            {
-                for (int j = 0; j < liczbaWezlow; j++)
-                {
-                    if (tablicaKierowaniaLaczami[i, j] == null)
-                        Console.Write($"[{i},{j}]: null\t");
-                    else
-                        Console.Write($"[{i},{j}]: {tablicaKierowaniaLaczami[i, j].idKrawedzi}\t");
-                }
-                Console.WriteLine();
             }
 
             //Potrzebujemy niby polowy z tego zakresu, ale nie wiem czy nie bedzie wprowadzonych lacz skierowanych. W tym przypadku trzeba by znowu wykorzystac 
             // [liczbaWezlow, liczbaWezlow]
-            // tablicaKierowaniaWezlami[a, b] zwroci najblizszy Wezel, przez ktory mamy przejsc idac z a do b
-            // tablicakierowaniaLaczami[a, b] zwroci najblizsze Lacze, przez ktore mamy przejsc idac z a do b
-            // jesli zawartosc komorki [a,b] to null, to znaczy, ze nie ma sciezki z a do b
+            // tablicaKierowaniaWezlami[a, b] zwroci Wezel, przez ktory mamy przejsc idac z a do b
+            // tablicakierowaniaLaczami[a, b] zwroci Lacze, ktore laczy bezposrednio a i b
+            // jesli zawartosc komorki [a,b] to null, to znaczy, ze nie ma bezposredniego lacza z a do b
             // jesli zawartosc tablicaKierowaniaWelzami[a, b] = b, to istnieje bezposrednie polaczenie miedzy nimi
+            // W przypadku bezposredniego polaczenia miedzy wezlami,tablica kierowania laczami [a, b] bedzie zawierala krawedz
+            // o najmniejszym koszcie
 
             //Ustawiamy poczatkowe wartosci
 
+            
             for (int i = 0; i < liczbaWezlow; i++)
                 for (int j = 0; j < liczbaWezlow; j++)
                 {
@@ -316,15 +303,7 @@ namespace ConsoleApplication8
                         tablicaKosztow[i, j] = INFINITY;
                 }
 
-            for (int k = 0; k < liczbaWezlow; k++) //Tak jak na slajdzie wykladowym
-                for (int i = 0; i < liczbaWezlow; i++)
-                    for (int j = 0; j < liczbaWezlow; j++)
-                        if (tablicaKosztow[i, j] > tablicaKosztow[i, k] + tablicaKosztow[k, j])
-                        {
-                            tablicaKosztow[i, j] = tablicaKosztow[i, k] + tablicaKosztow[k, j];
-                            tablicaKierowaniaWezlami[i, j] = wezly[k]; //k-ty Wezel
-                        }
-
+            Console.WriteLine("Tablica poczatkowych kosztow:");
             for (int i = 0; i < liczbaWezlow; i++) //Wyswietlanie tablic: kosztow i kierowania wezlami
             {
                 Console.WriteLine();
@@ -334,6 +313,54 @@ namespace ConsoleApplication8
                 }
             }
 
+            for (int k = 0; k < liczbaWezlow; k++) //Tak jak na slajdzie wykladowym
+                for (int i = 0; i < liczbaWezlow; i++)
+                    for (int j = 0; j < liczbaWezlow; j++)
+                        if (tablicaKosztow[i, j] > tablicaKosztow[i, k] + tablicaKosztow[k, j])
+                        {
+                            tablicaKosztow[i, j] = tablicaKosztow[i, k] + tablicaKosztow[k, j];
+                            tablicaKosztow[j, i] = tablicaKosztow[i, k] + tablicaKosztow[k, j];
+                            tablicaKierowaniaWezlami[i, j] = wezly[k]; //k-ty Wezel
+                            tablicaKierowaniaWezlami[j, i] = wezly[k];
+                        }
+
+            tabliceFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami, ref tablicaKosztow);
+            foreach (Sciezka sciezka in sciezki)
+            {
+                sciezka.KrawedzieSciezki = sciezka.wyznaczSciezke(sciezka.Wezel1, sciezka.Wezel2, ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
+                sciezka.wyznaczWezly(sciezka.Wezel1);
+                sciezka.pokazSciezke();
+                Console.WriteLine();
+            }
+            //testFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
+        }
+        public void tabliceFloyd(ref Lacze[,] tablicaKierowaniaLaczami, ref Wezel[,] tablicaKierowaniaWezlami, ref float[,] tablicaKosztow)
+        {
+            Console.WriteLine("\n\nTablica Kierowania Laczami:");
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    if (tablicaKierowaniaLaczami[i, j] == null)
+                        Console.Write($"[{i},{j}]: null\t");
+                    else
+                        Console.Write($"[{i},{j}]: {tablicaKierowaniaLaczami[i, j].idKrawedzi}\t");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Tablica najmniejszych kosztow:");
+            for (int i = 0; i < liczbaWezlow; i++) //Wyswietlanie tablic: kosztow i kierowania wezlami
+            {
+                Console.WriteLine();
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    Console.Write($"{ tablicaKosztow[i, j]}\t\t");
+                }
+            }
+
+            Console.WriteLine("\n\nTablica kierowania wezlami: ");
             for(int i=0; i<liczbaWezlow; i++)
             {
                 Console.WriteLine();
@@ -342,14 +369,47 @@ namespace ConsoleApplication8
                     if (tablicaKierowaniaWezlami[i, j] == null)
                         Console.Write("null\t");
                     else if (tablicaKierowaniaWezlami[i, j].idWezla == j + 1)
-                        Console.Write("S\t");
+                        Console.Write($"SA ({tablicaKierowaniaWezlami[i, j].idWezla})\t");
                     else
                         Console.Write($"{tablicaKierowaniaWezlami[i, j].idWezla}\t");
                 }
             }
-
+            
         }
+        public void testFloyd(ref Lacze[,] tablicaKierowaniaLaczami, ref Wezel[,] tablicaKierowaniaWezlami)
+        {
+            Console.WriteLine();
+            Console.WriteLine();
+            Sciezka S1 = new Sciezka();
+            Console.WriteLine($"Podaj nr wierzcholka(od 1 do {wezly.Count}), z ktorego wyruszamy");
+            int nr1 = 0, nr2 = 0;
+            try
+            {
+                nr1 = Int32.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Podaj liczby od 1 do  {wezly.Count} ");
+            }
 
+            Console.WriteLine($"Podaj nr wierzcholka (od 1 do  {wezly.Count}), do ktorego chcesz sie udac:");
+
+            try
+            {
+                nr2 = Int32.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Podaj liczby od 1 do  {wezly.Count} ");
+            }
+       
+            S1.Wezel1 = wezly[nr1 - 1]; //Ustawiamy poczatek i koniec Sciezki
+            S1.Wezel2 = wezly[nr2 - 1];
+
+            S1.KrawedzieSciezki = S1.wyznaczSciezke(wezly[nr1 - 1], wezly[nr2 - 1], ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
+            S1.wyznaczWezly(wezly[nr1 - 1]);
+            S1.pokazSciezke();
+        }
         //Odczytuje plik z miejsca wskazanego przez uzytkownika
         public void wczytaj_dane(string plik)
         {
@@ -404,17 +464,11 @@ namespace ConsoleApplication8
                     //Analogicznie jak wezly jednak do indekcowania uzywam wiadomosci o liczbie wersow ktore byly wyzej, aby zapisywac kolejne dane
 
                     liczbyDane = dane[(liczbaWezlow + 2 + j)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
                     krawedzie.Add(new Lacze(Int32.Parse(liczbyDane[0]),
                         wezly[Int32.Parse(liczbyDane[1]) - 1], wezly[Int32.Parse(liczbyDane[2]) - 1]));
                     //Podaje dla obiektow klasy wezel nr ID krawedzi, ktore zostaly do niego doprowadzone
                     wezly[Int32.Parse(liczbyDane[1]) - 1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0]) - 1]);
                     wezly[Int32.Parse(liczbyDane[2]) - 1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0]) - 1]);
-
-
-
-
-
 
                 }
                 catch (Exception)
