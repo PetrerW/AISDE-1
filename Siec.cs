@@ -17,9 +17,31 @@ namespace AISDE
         List<Lacze> krawedzie = new List<Lacze>();
         List<Sciezka> sciezki = new List<Sciezka>();
         List<int> tablicaMST = new List<int>();
+        // tablica kierowania wezlami - zawiera referencje do Wezla, do ktorego nalezy sie udac w drodze z a do b
+        Wezel[,] tablicaKierowaniaWezlami;
+        // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
+        Lacze[,] tablicaKierowaniaLaczami;
         int temp;
         string plik;
         bool brakPowodzenia = false;
+
+        public Lacze[,] zwrocTabliceKierowaniaLaczami
+        {
+            get { return tablicaKierowaniaLaczami; }
+            set { this.tablicaKierowaniaLaczami = value; }
+        }
+
+        public Wezel[,] zwrocTabliceKierowaniaWezlami
+        {
+            get { return tablicaKierowaniaWezlami; }
+            set { this.tablicaKierowaniaWezlami = value; }
+        }
+
+        public List<Sciezka> zwroc_sciezki
+        {
+            get { return this.sciezki; }
+            set { this.sciezki = value; }
+        }
 
         public List<Lacze> zwroc_lacza
             {
@@ -29,6 +51,11 @@ namespace AISDE
         public List<int> zwroc_tablicaMST
         {
             get { return tablicaMST; }
+        }
+
+        public List<Wezel> zwroc_wezly
+        {
+            get { return wezly; }
         }
 
         public string Algorytm
@@ -321,9 +348,9 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             //Koszt dostania się z a do b to tablicaKosztow[a,b] przechowuje koszt dostania się z węzła a do węzła b
             float[,] tablicaKosztow = new float[liczbaWezlow, liczbaWezlow];
             // tablica kierowania wezlami - zawiera referencje do Wezla, do ktorego nalezy sie udac w drodze z a do b
-            Wezel[,] tablicaKierowaniaWezlami = new Wezel[liczbaWezlow, liczbaWezlow];
+            tablicaKierowaniaWezlami = new Wezel[liczbaWezlow, liczbaWezlow];
             // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
-            Lacze[,] tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
+            tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
             foreach (Lacze lacze in krawedzie)
             {
                 if (tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] == null) //Jezeli jeszcze nic nie bylo tutaj, to przypisujemy wartosci
@@ -392,10 +419,17 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
                             tablicaKierowaniaWezlami[j, i] = wezly[k];
                         }
 
-            tabliceFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami, ref tablicaKosztow);
-            testFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
+            tabliceFloyd( zwrocTabliceKierowaniaLaczami,  tablicaKierowaniaWezlami, ref tablicaKosztow);
+            foreach (Sciezka sciezka in sciezki)
+            {
+                sciezka.KrawedzieSciezki = sciezka.wyznaczSciezke(sciezka.Wezel1, sciezka.Wezel2,  tablicaKierowaniaLaczami,  tablicaKierowaniaWezlami);
+                sciezka.wyznaczWezly(sciezka.Wezel1);
+                sciezka.pokazSciezke();
+                Console.WriteLine();
+            }
+            //testFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
         }
-        public void tabliceFloyd(ref Lacze[,] tablicaKierowaniaLaczami, ref Wezel[,] tablicaKierowaniaWezlami, ref float[,] tablicaKosztow)
+        public void tabliceFloyd( Lacze[,] tablicaKierowaniaLaczami,  Wezel[,] tablicaKierowaniaWezlami, ref float[,] tablicaKosztow)
         {
             Console.WriteLine("\n\nTablica Kierowania Laczami:");
             for (int i = 0; i < liczbaWezlow; i++)
@@ -467,10 +501,11 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             S1.Wezel1 = wezly[nr1 - 1]; //Ustawiamy poczatek i koniec Sciezki
             S1.Wezel2 = wezly[nr2 - 1];
 
-            S1.KrawedzieSciezki = S1.wyznaczSciezke(wezly[nr1 - 1], wezly[nr2 - 1], ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
+            S1.KrawedzieSciezki = S1.wyznaczSciezke(wezly[nr1 - 1], wezly[nr2 - 1],  tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
             S1.wyznaczWezly(wezly[nr1 - 1]);
             S1.pokazSciezke();
         }
+
 
         //Odczytuje plik z miejsca wskazanego przez uzytkownika
         public void wczytaj_dane(string plik)

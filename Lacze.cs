@@ -31,6 +31,8 @@ namespace AISDE
             this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
             this.WezelPierwszy = _WezelPierwszy;
             this.WezelDrugi = _WezelDrugi;
+            this.wezelpierwszy = _WezelPierwszy.idWezla;
+            this.wezeldrugi = _WezelDrugi.idWezla;
         }
 
         public int idKrawedzi

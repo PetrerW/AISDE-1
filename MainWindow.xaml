@@ -7,11 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <StackPanel Name = "panel">
-        <Grid Name="myGrid">
-            <Grid HorizontalAlignment="Left" Height="312" Margin="3,4,0,0" VerticalAlignment="Top" Width="506">
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="192,142,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-            </Grid>
+        <Canvas x:Name="canvas" Height="320" Margin="0,0,0,0"/>
 
-        </Grid>
     </StackPanel>
 </Window>
