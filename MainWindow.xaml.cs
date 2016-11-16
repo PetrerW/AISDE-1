@@ -80,7 +80,7 @@ namespace AISDE
                 labele.Add(new Label());
                 labele[i].Content = siec.zwroc_wezly[i].idWezla.ToString();
                 canvas.Children.Add(labele[i]);
-                Canvas.SetBottom(labele[i], siec.zwroc_wezly[i].wspY * 10);
+                Canvas.SetTop(labele[i], siec.zwroc_wezly[i].wspY * 10);
                 Canvas.SetLeft(labele[i], siec.zwroc_wezly[i].wspX * 10);
             }
 
