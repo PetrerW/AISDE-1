@@ -37,7 +37,8 @@ namespace AISDE
 
 
             // myGrid.Children.Add(myButton);
-            string nazwa = @"E:\Piotr\Programowanie\C#\AISDE\Wejscie.txt";
+            //string nazwa = @"C:\Users\Daniel\Documents\Visual Studio 2015\Projects\ConsoleApplication8\ConsoleApplication8\read.txt";
+            string nazwa = @"E:\Piotr\Programowanie\C#\AISDE\read.txt";
             siec = new Siec();
             siec.wczytaj_dane(nazwa);
             //siec.zwroc_lacza.Sort((x, y) => x.Waga.CompareTo(y.Waga));
@@ -53,7 +54,7 @@ namespace AISDE
 
             rysuj_algorytm(siec, liczbaLaczy, linie);
 
-    }
+        }
 
 
 
@@ -65,14 +66,15 @@ namespace AISDE
             // int liczbaLaczy= siec.zwroc_lacza.Count;
 
 
+
             for (int i = 0; i < size; i++)
             {
                 linie.Add(new Line());
                 linie[i].Stroke = System.Windows.Media.Brushes.LightSteelBlue;
-                linie[i].X1 = siec.zwroc_lacza[i].Wezel1.wspX*10 ;
-                linie[i].X2 = siec.zwroc_lacza[i].Wezel2.wspX*10 ;
-                linie[i].Y1 = siec.zwroc_lacza[i].Wezel1.wspY*10;
-                linie[i].Y2 = siec.zwroc_lacza[i].Wezel2.wspY*10 ;
+                linie[i].X1 = siec.zwroc_lacza[i].Wezel1.wspX * 10;
+                linie[i].X2 = siec.zwroc_lacza[i].Wezel2.wspX * 10;
+                linie[i].Y1 = siec.zwroc_lacza[i].Wezel1.wspY * 10;
+                linie[i].Y2 = siec.zwroc_lacza[i].Wezel2.wspY * 10;
                 canvas.Children.Add(linie[i]);
             }
             for (int i = 0; i < liczbaWezlow; i++)
@@ -80,8 +82,9 @@ namespace AISDE
                 labele.Add(new Label());
                 labele[i].Content = siec.zwroc_wezly[i].idWezla.ToString();
                 canvas.Children.Add(labele[i]);
-                Canvas.SetTop(labele[i], siec.zwroc_wezly[i].wspY * 10);
-                Canvas.SetLeft(labele[i], siec.zwroc_wezly[i].wspX * 10);
+                Canvas.SetTop(labele[i], siec.zwroc_wezly[i].wspY * 10 - 10);
+                Canvas.SetLeft(labele[i], siec.zwroc_wezly[i].wspX * 10 - 10);
+                
             }
 
         }
@@ -91,7 +94,7 @@ namespace AISDE
             SolidColorBrush redBrush = new SolidColorBrush();
             redBrush.Color = Colors.Red;
             size = siec.zwroc_lacza.Count;
-          
+
 
             if (siec.Algorytm == "MST")
             {
@@ -140,12 +143,12 @@ namespace AISDE
                         }
                     }
 
-               }
+            }
             else if (siec.Algorytm == "FLOYD")
             {
                 //Algorytm Floyda odpalany jest przy wczytywaniu danych, wiec wszystko bedzie juz poustawiane
                 //Okienka po lewej od góry
-                TextBox1 = new TextBox(); 
+                TextBox1 = new TextBox();
                 TextBox2 = new TextBox();
                 canvas.Children.Add(TextBox1);
                 canvas.Children.Add(TextBox2);
@@ -182,9 +185,32 @@ namespace AISDE
             SolidColorBrush redBrush = new SolidColorBrush();
             redBrush.Color = Colors.Red;
 
-            int w1, w2;
-            w1 = Int32.Parse(TextBox1.Text);
-            w2 = Int32.Parse(TextBox2.Text);
+            SolidColorBrush aquaBrush = new SolidColorBrush();
+            aquaBrush.Color = Colors.Aqua;
+
+            foreach(Line zmienna in linie)
+            {
+                zmienna.StrokeThickness = 2;
+                zmienna.Stroke = aquaBrush;
+            }
+
+            int w1 = 0,  w2 = 0;
+
+            try
+            {
+                w1 = Int32.Parse(TextBox1.Text);
+                w2 = Int32.Parse(TextBox2.Text);
+                if (w1 > siec.zwroc_wezly.Count || w1 <= 0 || w2 > siec.zwroc_wezly.Count || w2 <= 0)
+                    throw new Exception("Niepoprawny indeks!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                TextBox1.Clear();
+                TextBox2.Clear();
+                return;
+            }
+
             Wezel Pierwszy, Ostatni;
             Pierwszy = siec.zwroc_wezly[w1 - 1];
             Ostatni = siec.zwroc_wezly[w2 - 1];
@@ -192,11 +218,11 @@ namespace AISDE
             S1.zwroc_ListaKrawedziSciezki = S1.wyznaczSciezke(Pierwszy, Ostatni, siec.zwrocTabliceKierowaniaLaczami, siec.zwrocTabliceKierowaniaWezlami);
             S1.wyznaczWezly(Pierwszy);
 
-            foreach(Lacze lacze in S1.zwroc_ListaKrawedziSciezki)
+            foreach (Lacze lacze in S1.zwroc_ListaKrawedziSciezki)
             {
-                for (int i = 0; i<liczbaLaczy; i++)
+                for (int i = 0; i < liczbaLaczy; i++)
                 {
-                    if(lacze.idKrawedzi == siec.zwroc_lacza[i].idKrawedzi)
+                    if (lacze.idKrawedzi == siec.zwroc_lacza[i].idKrawedzi)
                     {
                         linie[i].StrokeThickness = 2;
                         linie[i].Stroke = redBrush;
