@@ -8,6 +8,6 @@
         Title="MainWindow" Height="350" Width="525">
     <StackPanel Name = "panel">
         <Canvas x:Name="canvas" Height="320" Margin="0,0,0,0"/>
-
+ 
     </StackPanel>
 </Window>
