@@ -8,6 +8,7 @@ namespace ConsoleApplication8
 {
     public class Lacze
     {
+        
         protected int identyfikatorKrawedzi;
         protected int wezelpierwszy;
         protected int wezeldrugi;
