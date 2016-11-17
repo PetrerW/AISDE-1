@@ -21,8 +21,7 @@ namespace AISDE
         Wezel[,] tablicaKierowaniaWezlami;
         // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
         Lacze[,] tablicaKierowaniaLaczami;
-        int temp;
-        string plik;
+
         bool brakPowodzenia = false;
 
         public Lacze[,] zwrocTabliceKierowaniaLaczami
@@ -84,6 +83,14 @@ namespace AISDE
 
         }
 
+        public void wylosujWagiLaczy()
+        {
+            Random rnd = new Random();
+            foreach(Lacze krawedz in krawedzie)
+            {
+                krawedz.Waga = rnd.Next(0, 101);
+            }
+        }
 
         public int algorytmPrima()
         {
@@ -91,7 +98,7 @@ namespace AISDE
             //
             //Najtansza krawedź jest pierwsza bo Lista będzie posortowana 
             try {
-                krawedzie[0].Waga = 10;
+                /*krawedzie[0].Waga = 10;
                 krawedzie[1].Waga = 7;
                 krawedzie[2].Waga = 6;
                 krawedzie[3].Waga = 3;
@@ -101,7 +108,7 @@ namespace AISDE
                 krawedzie[7].Waga = 7;
                 krawedzie[8].Waga = 3;
                 krawedzie[9].Waga = 5;
-                krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
+                krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga)); */
 
 
                 //Dwa konce lacza o najtanszej wadze oznaczamy jako odwiedzone
@@ -199,6 +206,7 @@ namespace AISDE
             int koniec=0;
             int k=0;
             Wezel pomocniczy = new Wezel();
+            /*
             krawedzie[0].Waga = 20;
             krawedzie[1].Waga = 7;
             krawedzie[2].Waga = 2;
@@ -208,7 +216,7 @@ namespace AISDE
             krawedzie[6].Waga = 10;
             krawedzie[7].Waga = 7;
             krawedzie[8].Waga = 3;
-            krawedzie[9].Waga = 5;
+            krawedzie[9].Waga = 5; */
            // krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
             /*
             Dla potrzeb algorytmu dodalem w kasie Wezel trzy 2 nowe zmienne i liste przechowujaca indeksy krawedzi, ktore sa doprowadzone do konkretnego Wezla.
@@ -341,7 +349,7 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
 
         public void algorytmFloyda()
         {
-            ustawWagiLaczy();
+            //ustawWagiLaczy();
 
             float INFINITY = float.MaxValue; //Nieskonoczonosc
             //tablica kosztow - zawiera koszt z wezla o identyfikatorze nr a do wezla nr b
@@ -585,6 +593,8 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             string[] infoDane = dane[liczbaLaczy+liczbaWezlow+2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             algorytm = infoDane[2];
 
+            wylosujWagiLaczy();
+            krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
             //Informacja o tym jaki algorytm nalezy uruchomic.
             if(algorytm=="MST")
             {
@@ -609,7 +619,27 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             }
 
         }
-           
+        
+        public bool sprawdzSpojnosc()
+        {
+            algorytmFloyda();
+
+            for(int i = 0; i< liczbaWezlow; i++)
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    if (i != j) //Dla tych samych indeksow zawsze bedzie null
+                    {
+                        if (tablicaKierowaniaWezlami[i, j] == null) 
+                            return false; //Graf niespojny
+                        else
+                            continue;
+                    }
+                    else
+                        continue;
+                }
+            return true;
+        }   
+
         }
     }
 

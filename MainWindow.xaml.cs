@@ -28,6 +28,8 @@ namespace AISDE
         int liczbaWezlow;
         List<Line> linie;
         List<Label> labele;
+        Button PrzyciskSpojnosci;
+        List<Button> Buttony;
 
         public MainWindow()
         {
@@ -48,6 +50,7 @@ namespace AISDE
             liczbaLaczy = siec.zwroc_lacza.Count;
             liczbaWezlow = siec.zwroc_wezly.Count;
 
+            Buttony = new List<Button>();
             //siec.algorytmPrima();
 
             rysuj(siec, liczbaLaczy, linie);
@@ -65,6 +68,12 @@ namespace AISDE
             // List<Line> linie = new List<Line>();
             // int liczbaLaczy= siec.zwroc_lacza.Count;
 
+            PrzyciskSpojnosci = new Button();
+            PrzyciskSpojnosci.Content = "Sprawdz spojnosc";
+            canvas.Children.Add(PrzyciskSpojnosci);
+            Canvas.SetLeft(PrzyciskSpojnosci, 130);
+            Canvas.SetTop(PrzyciskSpojnosci, 130);
+            PrzyciskSpojnosci.Click += button2_Click;
 
 
             for (int i = 0; i < size; i++)
@@ -76,15 +85,21 @@ namespace AISDE
                 linie[i].Y1 = siec.zwroc_lacza[i].Wezel1.wspY * 10;
                 linie[i].Y2 = siec.zwroc_lacza[i].Wezel2.wspY * 10;
                 canvas.Children.Add(linie[i]);
+                Buttony.Add(new Button());
+                Buttony[i].Content = siec.zwroc_lacza[i].Waga.ToString(); //Przypisujemy wage krawedzi do linii
+                canvas.Children.Add(Buttony[i]);
+                Canvas.SetLeft(Buttony[i], (linie[i].X1 + linie[i].X2) / 2);
+                Canvas.SetTop(Buttony[i], (linie[i].Y1 + linie[i].Y2) / 2);
             }
+
             for (int i = 0; i < liczbaWezlow; i++)
             {
                 labele.Add(new Label());
                 labele[i].Content = siec.zwroc_wezly[i].idWezla.ToString();
+                labele[i].Content += "(" + siec.zwroc_wezly[i].wspX.ToString() + " " + siec.zwroc_wezly[i].wspY.ToString() + ")";
                 canvas.Children.Add(labele[i]);
                 Canvas.SetTop(labele[i], siec.zwroc_wezly[i].wspY * 10 - 10);
                 Canvas.SetLeft(labele[i], siec.zwroc_wezly[i].wspX * 10 - 10);
-                
             }
 
         }
@@ -229,6 +244,14 @@ namespace AISDE
                     }
                 }
             }
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            if(siec.sprawdzSpojnosc())
+                MessageBox.Show("Graf spójny!");
+            else
+                MessageBox.Show("Graf niespójny!");
         }
 
 
