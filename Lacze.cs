@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication8
+namespace AISDE
 {
     public class Lacze
     {
@@ -31,6 +31,8 @@ namespace ConsoleApplication8
             this.identyfikatorKrawedzi = _identyfikatorKrawedzi;
             this.WezelPierwszy = _WezelPierwszy;
             this.WezelDrugi = _WezelDrugi;
+            this.wezelpierwszy = _WezelPierwszy.idWezla;
+            this.wezeldrugi = _WezelDrugi.idWezla;
         }
 
         public int idKrawedzi
