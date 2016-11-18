@@ -772,6 +772,14 @@ if (wezly[i].listaKrawedzi.Count==0)
             
         }
 
+        public void wagiOdleglosc()
+        {
+            foreach(Lacze krawedz in krawedzie)
+            {
+                krawedz.Waga = (float)Math.Sqrt(Math.Pow(krawedz.Wezel1.wspX - krawedz.Wezel2.wspX, 2) + Math.Pow(krawedz.Wezel1.wspY - krawedz.Wezel2.wspY, 2));
+            }
+        }
+
         public bool poprawnoscSciezkiDijkstry()
         {
             algorytmFloyda();

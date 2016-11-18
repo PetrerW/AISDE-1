@@ -39,8 +39,8 @@ namespace AISDE
 
 
             // myGrid.Children.Add(myButton);
-            string nazwa = @"C:\Users\Daniel\Documents\Visual Studio 2015\Projects\ConsoleApplication8\ConsoleApplication8\read.txt";
-           // string nazwa = @"E:\Piotr\Programowanie\C#\AISDE\read.txt";
+            //string nazwa = @"C:\Users\Daniel\Documents\Visual Studio 2015\Projects\ConsoleApplication8\ConsoleApplication8\read.txt";
+            string nazwa = @"E:\Piotr\Programowanie\C#\AISDE\read.txt";
             siec = new Siec();
             siec.wczytaj_dane(nazwa);
 
@@ -70,7 +70,7 @@ namespace AISDE
         {
             // List<Line> linie = new List<Line>();
             // int liczbaLaczy= siec.zwroc_lacza.Count;
-            
+            siec.wagiOdleglosc();
             
             Button PrzyciskSpojnosci = new Button();
             PrzyciskSpojnosci.Content = "Sprawdz spojnosc";
