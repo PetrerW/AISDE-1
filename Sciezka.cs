@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication8
+
+namespace AISDE
 {
-    class Sciezka
+    public class Sciezka
     {
-        LinkedList<Lacze> krawedzieSciezki = new LinkedList<Lacze>();
-        LinkedList<Wezel> wezlySciezki = new LinkedList<Wezel>();
         List<Lacze> ListaKrawedziSciezki = new List<Lacze>();
         List<Wezel> ListaWezlowSciezki = new List<Wezel>();
         //krawedzieSciezki[0] to krawedz wychodzaca z wezlySciezki[0] i dochodzaca do wezlySciezki[1]
@@ -21,6 +20,28 @@ namespace ConsoleApplication8
 
         protected int wezelpierwszy;
         protected int wezeldrugi;
+
+        public Sciezka()
+        {
+            this.Wezel1 = null;
+            this.Wezel2 = null;
+            this.wezel1 = 0;
+            this.wezel2 = 0;
+        }
+
+        public Sciezka(Wezel Pierwszy, Wezel Ostatni)
+        {
+            this.Wezel1 = Pierwszy;
+            this.Wezel2 = Ostatni;
+            this.wezel1 = Pierwszy.idWezla;
+            this.wezel2 = Ostatni.idWezla;
+        }
+
+        public List<Lacze> zwroc_ListaKrawedziSciezki
+        {
+            get { return ListaKrawedziSciezki; }
+            set { this.ListaKrawedziSciezki = value; }
+        }
 
         public List<Lacze> KrawedzieSciezki
         {
@@ -53,19 +74,23 @@ namespace ConsoleApplication8
             set { WezelDrugi = value; }
         }
 
-        public List<Lacze> wyznaczSciezke(Wezel Skad, Wezel Dokad, ref Lacze[,] tablicaKierowaniaLaczami, ref Wezel[,] tablicaKierowaniaWezlami)
+        public List<Lacze> wyznaczSciezke(Wezel Skad, Wezel Dokad, Lacze[,] tablicaKierowaniaLaczami, Wezel[,] tablicaKierowaniaWezlami)
         {
             List<Lacze> tempList = new List<Lacze>();
-            if(tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] == Dokad)
+            if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] != null)
             {
-                tempList.Add(tablicaKierowaniaLaczami[Skad.idWezla - 1, Dokad.idWezla - 1]);
-            }
-            else
-            {
-                //Dodajemy sciezke z Skad do punktu posredniego, wskazanego przez tablice kierowania Wezlami
-                tempList.AddRange(wyznaczSciezke(Skad, tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami));
-                //Potem doklejamy drugi koniec listy, liste krawedzi z posredniego do koncowego
-                tempList.AddRange(wyznaczSciezke(tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], Dokad, ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami));
+
+                if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] == Dokad)
+                {
+                    tempList.Add(tablicaKierowaniaLaczami[Skad.idWezla - 1, Dokad.idWezla - 1]);
+                }
+                else
+                {
+                    //Dodajemy sciezke z Skad do punktu posredniego, wskazanego przez tablice kierowania Wezlami
+                    tempList.AddRange(wyznaczSciezke(Skad, tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
+                    //Potem doklejamy drugi koniec listy, liste krawedzi z posredniego do koncowego
+                    tempList.AddRange(wyznaczSciezke(tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], Dokad, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
+                }
             }
             return tempList;
         }
@@ -73,7 +98,7 @@ namespace ConsoleApplication8
         public void wyznaczWezly(Wezel Skad)
         {
             ListaWezlowSciezki.Add(Skad);
-            foreach(Lacze lacze in ListaKrawedziSciezki)
+            foreach (Lacze lacze in ListaKrawedziSciezki)
             {
                 if (!ListaWezlowSciezki.Contains(lacze.Wezel1))
                     ListaWezlowSciezki.Add(lacze.Wezel1);
@@ -88,12 +113,10 @@ namespace ConsoleApplication8
         {
             int i = 0;
             Wezel temp = new Wezel();
-            temp = ListaWezlowSciezki[ListaWezlowSciezki.Count-1];
-            Console.WriteLine();
-            Console.WriteLine();
+            temp = ListaWezlowSciezki[ListaWezlowSciezki.Count - 1];
             Console.WriteLine($"Sciezka z wezla nr {ListaWezlowSciezki[0].idWezla} do wezla nr {temp.idWezla}");
             while (ListaKrawedziSciezki.ElementAtOrDefault(i) != null)
-            { 
+            {
                 Console.WriteLine($"Od wezla : {ListaWezlowSciezki[i].idWezla}");
                 Console.WriteLine($"przejdz krawedzia: {ListaKrawedziSciezki[i].idKrawedzi}");
                 i++;
