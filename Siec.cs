@@ -780,6 +780,24 @@ if (wezly[i].listaKrawedzi.Count==0)
             }
         }
 
+        public void krawedzieProjekt()
+        {
+            int idKraw = 1;
+            krawedzie.Clear();
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = i + 1; j < liczbaWezlow; j++)
+                {
+                    krawedzie.Add(new Lacze(idKraw, wezly[i], wezly[j])); //Dodajemy nowa krawedz
+                    krawedzie[idKraw-1].Waga = (float)Math.Sqrt(Math.Pow(krawedzie[idKraw-1].Wezel1.wspX - krawedzie[idKraw-1].Wezel2.wspX, 2) + 
+                        Math.Pow(krawedzie[idKraw-1].Wezel1.wspY - krawedzie[idKraw-1].Wezel2.wspY, 2)); //Ustawiamy koszt
+                    idKraw++;
+                }
+            }
+
+
+        }
+
         public bool poprawnoscSciezkiDijkstry()
         {
             algorytmFloyda();

@@ -44,7 +44,9 @@ namespace AISDE
             siec = new Siec();
             siec.wczytaj_dane(nazwa);
 
-            //siec.dodawanieWierzcholkow(10);
+            siec.dodawanieWierzcholkow(5);
+            siec.krawedzieProjekt();
+            siec.algorytmPrima();
             //siec.losoweKrawedzie(15);
             //siec.zwroc_lacza.Sort((x, y) => x.Waga.CompareTo(y.Waga));
 
@@ -62,15 +64,10 @@ namespace AISDE
 
         }
 
-
-
-
-
         private void rysuj(Siec siec, int size, List<Line> linie)
         {
             // List<Line> linie = new List<Line>();
             // int liczbaLaczy= siec.zwroc_lacza.Count;
-            siec.wagiOdleglosc();
             
             Button PrzyciskSpojnosci = new Button();
             PrzyciskSpojnosci.Content = "Sprawdz spojnosc";
