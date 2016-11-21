@@ -5,15 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
+
+
 namespace AISDE
 {
-   public class Siec
+    public class Siec
     {
 
         protected int liczbaWezlow;
         protected int liczbaLaczy;
         string algorytm;
-        List<Wezel> wezly=new List<Wezel>();
+        List<Wezel> wezly = new List<Wezel>();
         List<Lacze> krawedzie = new List<Lacze>();
         List<Sciezka> sciezki = new List<Sciezka>();
         List<int> tablicaMST = new List<int>();
@@ -21,8 +23,27 @@ namespace AISDE
         Wezel[,] tablicaKierowaniaWezlami;
         // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
         Lacze[,] tablicaKierowaniaLaczami;
+        float[,] tablicaKosztow;
+        int[,] suma;
+        List<Lacze> usunieteKrawedzie = new List<Lacze>();
 
         bool brakPowodzenia = false;
+
+        
+        public List<Lacze> usuniete
+        {
+            get { return usunieteKrawedzie; }
+            set { this.usunieteKrawedzie = value; }
+        }
+       /* public int[,] tablicaKosztow
+        {
+            get { return suma; }
+            set { suma = value; }
+        }*/
+        public float[,]Koszty
+        {
+            get { return tablicaKosztow; }
+        }
 
         public Lacze[,] zwrocTabliceKierowaniaLaczami
         {
@@ -43,8 +64,8 @@ namespace AISDE
         }
 
         public List<Lacze> zwroc_lacza
-            {
-            get      { return krawedzie; }
+        {
+            get { return krawedzie; }
             set { krawedzie = value; }
         }
         public List<int> zwroc_tablicaMST
@@ -60,7 +81,7 @@ namespace AISDE
         public string Algorytm
         {
             get { return algorytm; }
-            
+
         }
 
         public bool fail
@@ -86,53 +107,54 @@ namespace AISDE
         public void wylosujWagiLaczy()
         {
             Random rnd = new Random();
-            foreach(Lacze krawedz in krawedzie)
+            foreach (Lacze krawedz in krawedzie)
             {
-                krawedz.Waga = rnd.Next(0, 101);
+                krawedz.Waga = rnd.Next(101);
             }
+
         }
+
 
         public int algorytmPrima()
         {
             //Bedziemy szukac najtanszych krawedzi, ktore spelniaja zalozenia algorytmu Prima, czyli: jeden wierzcholek krawedzi nalezy do drzewa, a drugi nie.
             //
             //Najtansza krawedź jest pierwsza bo Lista będzie posortowana 
-            try {
-                /*krawedzie[0].Waga = 10;
-                krawedzie[1].Waga = 7;
-                krawedzie[2].Waga = 6;
-                krawedzie[3].Waga = 3;
-                krawedzie[4].Waga = 5;
-                krawedzie[5].Waga = 3;
-                krawedzie[6].Waga = 2;
-                krawedzie[7].Waga = 7;
-                krawedzie[8].Waga = 3;
-                krawedzie[9].Waga = 5;
-                krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga)); */
+           // try
+           // {
+               
 
 
                 //Dwa konce lacza o najtanszej wadze oznaczamy jako odwiedzone
-                krawedzie[0].Wezel1.Odwiedzony = true;
-                krawedzie[0].Wezel2.Odwiedzony = true;
-                tablicaMST.Add(krawedzie[0].idKrawedzi);
+                // krawedzie[0].Wezel1.Odwiedzony = true;
+                // krawedzie[0].Wezel2.Odwiedzony = true;
+                // tablicaMST.Add(krawedzie[0].idKrawedzi);
+                for (int i = 0; i < wezly.Count; i++)
+                {
+                    wezly[i].Odwiedzony = false;
+                }
 
+                
+                wezly[0].Odwiedzony = true;
                 //Sa to dwa konce najtanszej krawedzi
-                int liczbaOdwiedzonychWezlow = 2;
+                int liczbaOdwiedzonychWezlow = 1;
                 int najlepszeLacze = 0;
-                int wykorzystaneKrawedzie = 1;
+                int wykorzystaneKrawedzie = 0;
                 int koniec = 0;
 
                 Lacze pomocnicze = new Lacze(0, 0, 0);
 
 
 
+                
 
 
                 do
                 {
 
                     //Petla do-While nie bedzie sprawdzala wykorzystanych juz krawedzi.
-                    int k = wykorzystaneKrawedzie;
+                    int k = 0;
+                    koniec = 0;
                     //za kazdym razem szukam najlepszego wierzcholka ktory pasuje do warunkow algorytmu 
                     do
                     {
@@ -149,7 +171,7 @@ namespace AISDE
 
                     } while (koniec == 0);
                     //Petla nie sprawdza juz wykorzystanych Krawedzi
-                    for (int i = wykorzystaneKrawedzie; i < liczbaLaczy; i++)
+                    for (int i = wykorzystaneKrawedzie; i < zwroc_lacza.Count; i++)
                     {
 
                         //jeden z wierzcholkow musi byc nalezec do drzewa drugi-nie
@@ -186,45 +208,50 @@ namespace AISDE
 
                     //no wiadomo krazy do czasu az wszystkie wierzcholki beda nalezaly do drzewa 
                 }
-                while (liczbaOdwiedzonychWezlow != liczbaWezlow);
+                while (liczbaOdwiedzonychWezlow != wezly.Count);
 
 
-            }
-            catch(Exception)
-            {
-                brakPowodzenia = true;
-            }
+          //  }
+          //  catch (Exception)
+          //  {
+          //      brakPowodzenia = true;
+          //  }
 
             return 0;
         }
 
- public int algorytmDijkstry()
+        public int algorytmDijkstry()
         {
             int liczbaOdwiedzonychWezlow = 0;
             int INF = int.MaxValue;
             int najtanszyWezel = 0;
-            int koniec=0;
-            int k=0;
+            int koniec;
+            int k = 0;
+            int nieDolaczoneWezly = 0;
             Wezel pomocniczy = new Wezel();
-            /*
-            krawedzie[0].Waga = 20;
-            krawedzie[1].Waga = 7;
-            krawedzie[2].Waga = 2;
-            krawedzie[3].Waga = 3;
-            krawedzie[4].Waga = 6;
-            krawedzie[5].Waga = 4;
-            krawedzie[6].Waga = 10;
-            krawedzie[7].Waga = 7;
-            krawedzie[8].Waga = 3;
-            krawedzie[9].Waga = 5; */
-           // krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
+
+
+            for (int i = 0; i < wezly.Count; i++)
+            {
+                wezly[i].Odwiedzony = false;
+            }
+
+
+            for (int i = 0; i < wezly.Count; i++)
+            {
+                if (wezly[i].listaKrawedzi.Count == 0)
+                {
+                    nieDolaczoneWezly++;
+                }
+
+            }
+
             /*
             Dla potrzeb algorytmu dodalem w kasie Wezel trzy 2 nowe zmienne i liste przechowujaca indeksy krawedzi, ktore sa doprowadzone do konkretnego Wezla.
             Dwie zmienne to : etykieta, czyli najtanszy koszt dotarcia do wierzcholka oraz zmienna dzieki ktorej wiem przez ktory wierzcholek nalezy do tego punktu isc.
-
             Pierwszy wierzcholek sciezki ma etykiete 0 a pozostale na nieskonczonosc, ktora zdefiniowalem jako 1000.
             */
-            for (int i=0; i<liczbaWezlow; i++)
+            for (int i = 0; i < wezly.Count; i++)
             {
                 wezly[i].Etykieta = INF;
             }
@@ -232,6 +259,7 @@ namespace AISDE
 
             do
             {
+                koniec = 0;
                 //wybieram pierwszy dowolny wezel, ktory posluzy mi jako odnosnik do wyszukiwania najkorzystniejszego wezla.
                 do
                 {
@@ -246,7 +274,7 @@ namespace AISDE
                 } while (koniec == 0);
 
                 //Poszukiwanie najtanszego
-                for(int i=liczbaOdwiedzonychWezlow; i<liczbaWezlow; i++)
+                for (int i = liczbaOdwiedzonychWezlow; i < wezly.Count; i++)
                 {
                     if (wezly[i].Odwiedzony == false)
                     {
@@ -258,20 +286,20 @@ namespace AISDE
                 }
                 //Tu wykorzystuje liste ktora stworzylem w klasie wezel po to, aby nie szukac wsrod wszystkich krawedzi. Wiem z gory ktore krawedzie musze przegladnac.
                 //Wiem jakich mam sasiadow
-                foreach (Lacze krawedz in wezly[najtanszyWezel].listaKrawedzi  )
+                foreach (Lacze krawedz in wezly[najtanszyWezel].listaKrawedzi)
                 {
                     //Jezeli wybrany jest najtanszy wezel to sprawdzam, ktory jest to wezel w krawedzi. WezelPierwszy, czy WezelDrugi
-                    if(wezly[najtanszyWezel].idWezla==krawedz.Wezel1.idWezla)
+                    if (wezly[najtanszyWezel].idWezla == krawedz.Wezel1.idWezla)
                     {
                         //Jezeli ten sasiad byl juz przegladany to nie bedzie dla niego lepszego polonczenia, jest "skreslony"
-                        if(krawedz.Wezel2.Odwiedzony==false)
+                        if (krawedz.Wezel2.Odwiedzony == false)
                         {
                             if (krawedz.Wezel2.Etykieta > (krawedz.Waga + krawedz.Wezel1.Etykieta))
                             {
                                 krawedz.Wezel2.Etykieta = krawedz.Waga + krawedz.Wezel1.Etykieta;
                                 //Jezeli to polonczenie okazuje sie byc najkorzystniejsze to zmieniam Wezel przez ktory droga jest najtansza
                                 krawedz.Wezel2.NajlepiejPrzez = wezly[najtanszyWezel];
-                               // temp = krawedz.idKrawedzi;
+                                // temp = krawedz.idKrawedzi;
                             }
                         }
                     }
@@ -283,7 +311,7 @@ namespace AISDE
                             {
                                 krawedz.Wezel1.Etykieta = krawedz.Waga + krawedz.Wezel2.Etykieta;
                                 krawedz.Wezel1.NajlepiejPrzez = wezly[najtanszyWezel];
-                               // temp = krawedz.idKrawedzi;
+
                             }
                         }
                     }
@@ -292,7 +320,7 @@ namespace AISDE
 
                 wezly[najtanszyWezel].Odwiedzony = true;
                 //tablicaMST.Add(temp);
-               
+
                 // Przejmuje referencje do obiektu, usuwam najkorzystniejszy wezel z jego miejsca w liscie i umieszczam na miejscach, gdzie nie bede juz sprawdzal
                 //Pętle for beze zaczynal dla i= liczbieOdwiedzonychWezlow czyli petla ich już nie obejmuje, czyli petla krazy mniejszą ilosc razy.
                 if (najtanszyWezel != liczbaOdwiedzonychWezlow)
@@ -309,39 +337,44 @@ namespace AISDE
 
 
 
-            } while (liczbaOdwiedzonychWezlow != (liczbaWezlow-1));
+            } while ((liczbaOdwiedzonychWezlow + nieDolaczoneWezly) != (wezly.Count - 1));
 
             //Tutaj sprawdzalem czy wypisuje jak trzeba sciezke
 
-            Console.WriteLine(sciezki[0].Wezel2.idWezla);
+
             Wezel zmienna1 = sciezki[0].Wezel2;
             Wezel zmienna = sciezki[0].Wezel2.NajlepiejPrzez;
-       
-            Console.WriteLine(zmienna.idWezla);
-            do
+
+
+            try
             {
-for(int i=0; i<liczbaLaczy ;i++ )
+                do
                 {
-if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWezla == zmienna.idWezla) || (krawedzie[i].Wezel2.idWezla == zmienna1.idWezla && krawedzie[i].Wezel1.idWezla == zmienna.idWezla))
+                    for (int i = 0; i < liczbaLaczy; i++)
                     {
-                        tablicaMST.Add(krawedzie[i].idKrawedzi);
+                        if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWezla == zmienna.idWezla) || (krawedzie[i].Wezel2.idWezla == zmienna1.idWezla && krawedzie[i].Wezel1.idWezla == zmienna.idWezla))
+                        {
+                            tablicaMST.Add(krawedzie[i].idKrawedzi);
+                        }
+
+
                     }
-                    
-                            
-                 }
-                zmienna1 = zmienna;
-                zmienna = zmienna.NajlepiejPrzez;
+                    zmienna1 = zmienna;
+                    zmienna = zmienna.NajlepiejPrzez;
 
-            } while (zmienna1!=sciezki[0].Wezel1);
-            //Lacze result = krawedzie.Find(x => x.Wezel1.idWezla == sciezki[0].Wezel2.idWezla , x => x.Wezel2.idWezla == zmienna.idWezla);
-           /* while (zmienna.NajlepiejPrzez != sciezki[0].Wezel1) 
+                } while (zmienna1 != sciezki[0].Wezel1);
+            }
+            catch
             {
-
-                zmienna = zmienna.NajlepiejPrzez;
-                    Console.WriteLine(zmienna.idWezla);             
 
             }
-            Console.WriteLine(sciezki[0].Wezel1.idWezla);*/
+            //Lacze result = krawedzie.Find(x => x.Wezel1.idWezla == sciezki[0].Wezel2.idWezla , x => x.Wezel2.idWezla == zmienna.idWezla);
+            /* while (zmienna.NajlepiejPrzez != sciezki[0].Wezel1) 
+             {
+                 zmienna = zmienna.NajlepiejPrzez;
+                     Console.WriteLine(zmienna.idWezla);             
+             }
+             Console.WriteLine(sciezki[0].Wezel1.idWezla);*/
 
 
             return 0;
@@ -349,16 +382,17 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
 
         public void algorytmFloyda()
         {
-            //ustawWagiLaczy();
+            // ustawWagiLaczy();
 
             float INFINITY = float.MaxValue; //Nieskonoczonosc
             //tablica kosztow - zawiera koszt z wezla o identyfikatorze nr a do wezla nr b
             //Koszt dostania się z a do b to tablicaKosztow[a,b] przechowuje koszt dostania się z węzła a do węzła b
-            float[,] tablicaKosztow = new float[liczbaWezlow, liczbaWezlow];
+             tablicaKosztow = new float[liczbaWezlow, liczbaWezlow];
             // tablica kierowania wezlami - zawiera referencje do Wezla, do ktorego nalezy sie udac w drodze z a do b
             tablicaKierowaniaWezlami = new Wezel[liczbaWezlow, liczbaWezlow];
             // tablica kierowania krawedziami - zawiera indeks krawedzi ktora prowadzi z wzezla a do b, gdzie a i b sa sasiadami
             tablicaKierowaniaLaczami = new Lacze[liczbaWezlow, liczbaWezlow];
+
             foreach (Lacze lacze in krawedzie)
             {
                 if (tablicaKierowaniaLaczami[lacze.wezel1 - 1, lacze.wezel2 - 1] == null) //Jezeli jeszcze nic nie bylo tutaj, to przypisujemy wartosci
@@ -427,17 +461,17 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
                             tablicaKierowaniaWezlami[j, i] = wezly[k];
                         }
 
-            tabliceFloyd( zwrocTabliceKierowaniaLaczami,  tablicaKierowaniaWezlami, ref tablicaKosztow);
+            tabliceFloyd(zwrocTabliceKierowaniaLaczami, tablicaKierowaniaWezlami, ref tablicaKosztow);
             foreach (Sciezka sciezka in sciezki)
             {
-                sciezka.KrawedzieSciezki = sciezka.wyznaczSciezke(sciezka.Wezel1, sciezka.Wezel2,  tablicaKierowaniaLaczami,  tablicaKierowaniaWezlami);
+                sciezka.KrawedzieSciezki = sciezka.wyznaczSciezke(sciezka.Wezel1, sciezka.Wezel2, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
                 sciezka.wyznaczWezly(sciezka.Wezel1);
                 sciezka.pokazSciezke();
                 Console.WriteLine();
             }
             //testFloyd(ref tablicaKierowaniaLaczami, ref tablicaKierowaniaWezlami);
         }
-        public void tabliceFloyd( Lacze[,] tablicaKierowaniaLaczami,  Wezel[,] tablicaKierowaniaWezlami, ref float[,] tablicaKosztow)
+        public void tabliceFloyd(Lacze[,] tablicaKierowaniaLaczami, Wezel[,] tablicaKierowaniaWezlami, ref float[,] tablicaKosztow)
         {
             Console.WriteLine("\n\nTablica Kierowania Laczami:");
             for (int i = 0; i < liczbaWezlow; i++)
@@ -509,7 +543,7 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             S1.Wezel1 = wezly[nr1 - 1]; //Ustawiamy poczatek i koniec Sciezki
             S1.Wezel2 = wezly[nr2 - 1];
 
-            S1.KrawedzieSciezki = S1.wyznaczSciezke(wezly[nr1 - 1], wezly[nr2 - 1],  tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
+            S1.KrawedzieSciezki = S1.wyznaczSciezke(wezly[nr1 - 1], wezly[nr2 - 1], tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
             S1.wyznaczWezly(wezly[nr1 - 1]);
             S1.pokazSciezke();
         }
@@ -532,14 +566,14 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
 
             //Zapisuje do tablicy caly plik.
             //Jeden wiersz to jedna komorka tablicy.
-            
-            //To co sie tu dzieje pozwala na podzial i zapis fragmentow tekstu ktory jest oddzielony spacja
-                string[] liczbyDane = dane[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            //wedlug wzorcowego pliku w pierwszej lini trzecim elementem bedzie liczba wezlow, ktore nalezy zapisac.
-                liczbaWezlow = Int32.Parse(liczbyDane[2]);
-           
 
-           
+            //To co sie tu dzieje pozwala na podzial i zapis fragmentow tekstu ktory jest oddzielony spacja
+            string[] liczbyDane = dane[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            //wedlug wzorcowego pliku w pierwszej lini trzecim elementem bedzie liczba wezlow, ktore nalezy zapisac.
+            liczbaWezlow = Int32.Parse(liczbyDane[2]);
+
+
+
 
             for (int i = 0; i < liczbaWezlow; i++)
             {
@@ -558,11 +592,11 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
                 }
             }
 
-                liczbyDane = dane[liczbaWezlow+1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                liczbaLaczy = Int32.Parse(liczbyDane[2]);
+            liczbyDane = dane[liczbaWezlow + 1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            liczbaLaczy = Int32.Parse(liczbyDane[2]);
 
-                for (int j = 0; j < liczbaLaczy; j++)
-                {
+            for (int j = 0; j < liczbaLaczy; j++)
+            {
 
                 try
                 {
@@ -573,39 +607,45 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
                     krawedzie.Add(new Lacze(Int32.Parse(liczbyDane[0]),
                         wezly[Int32.Parse(liczbyDane[1]) - 1], wezly[Int32.Parse(liczbyDane[2]) - 1]));
                     //Podaje dla obiektow klasy wezel nr ID krawedzi, ktore zostaly do niego doprowadzone
-                    wezly[Int32.Parse(liczbyDane[1])-1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0])-1]);
-                    wezly[Int32.Parse(liczbyDane[2])-1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0])-1]);
+                    wezly[Int32.Parse(liczbyDane[1]) - 1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0]) - 1]);
+                    wezly[Int32.Parse(liczbyDane[2]) - 1].wprowadzenieIndeksowKrawedzi(krawedzie[Int32.Parse(liczbyDane[0]) - 1]);
 
-                    
+
 
 
 
 
                 }
-                    catch (Exception)
-                    {
+                catch (Exception)
+                {
 
-                    }
                 }
-           
+            }
+
             //Kolejny dziwny indeks w nastepnej lini, ale takze wynika z ilosci danych wczesniej zapisanych
 
-            string[] infoDane = dane[liczbaLaczy+liczbaWezlow+2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] infoDane = dane[liczbaLaczy + liczbaWezlow + 2].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             algorytm = infoDane[2];
 
             wylosujWagiLaczy();
             krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
             //Informacja o tym jaki algorytm nalezy uruchomic.
-            if(algorytm=="MST")
+            if (algorytm == "MST")
             {
-                 algorytmPrima();
+                if (sprawdzSpojnosc())
+                {
+                 //   algorytmPrima();
+                }
+
+
                 //To co jest dalej nie ma glebszego sensu bo jeszcze nie mamy kolejnych algorytmow 
             }
-            else if(algorytm=="SCIEZKA")
+            else if (algorytm == "SCIEZKA")
             {
-                liczbyDane = dane[(dane.Length-1)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                sciezki.Add(new Sciezka() { Wezel1 = wezly[Int32.Parse(liczbyDane[0])-1], Wezel2 = wezly[Int32.Parse(liczbyDane[1]) - 1] });
-                algorytmDijkstry();
+                liczbyDane = dane[(dane.Length - 1)].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                sciezki.Add(new Sciezka() { Wezel1 = wezly[Int32.Parse(liczbyDane[0]) - 1], Wezel2 = wezly[Int32.Parse(liczbyDane[1]) - 1] });
+
+
             }
             else
             {
@@ -619,27 +659,215 @@ if ((krawedzie[i].Wezel1.idWezla == zmienna1.idWezla && krawedzie[i].Wezel2.idWe
             }
 
         }
-        
+
         public bool sprawdzSpojnosc()
         {
             algorytmFloyda();
-
-            for(int i = 0; i< liczbaWezlow; i++)
+            for (int i = 0; i < liczbaWezlow; i++)
                 for (int j = 0; j < liczbaWezlow; j++)
                 {
-                    if (i != j) //Dla tych samych indeksow zawsze bedzie null
+                    if (i != j)
                     {
-                        if (tablicaKierowaniaWezlami[i, j] == null) 
-                            return false; //Graf niespojny
+                        if (tablicaKierowaniaWezlami[i, j] == null && j != i)
+                            return false;
                         else
                             continue;
                     }
                     else
                         continue;
+
+
                 }
             return true;
-        }   
 
         }
+
+        public void kosztCalejSciezki()
+        {
+            algorytmFloyda();
+            suma = new int[liczbaWezlow, liczbaWezlow];
+            Wezel Pierwszy, Ostatni;
+            Sciezka S1;
+            int pomocnicza;
+
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    if (i != j)
+                    {
+                        pomocnicza = 0;
+                        Pierwszy = wezly[i];
+                        Ostatni = wezly[j];
+                        S1 = new Sciezka(Pierwszy, Ostatni);
+                        S1.zwroc_ListaKrawedziSciezki = S1.wyznaczSciezke(Pierwszy, Ostatni, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
+                        S1.wyznaczWezly(Pierwszy);
+                        foreach (Lacze krawedz in S1.zwroc_ListaKrawedziSciezki)
+                        {
+                            pomocnicza = pomocnicza + (int)krawedz.Waga;
+                        }
+                        suma[i, j] = pomocnicza;
+                        
+                    }
+                    else
+                    {
+                        suma[i, j] = 0;
+                    }
+                }
+            }
+
+
+        }
+
+        public List<Lacze> MaxSciezka()
+        {
+            algorytmFloyda();
+           // kosztCalejSciezki();
+           float sumaMax = 0;
+            int poczatek=0,koniec=0;
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = i+1; j < liczbaWezlow; j++)
+                {
+                    try {
+                        if (tablicaKosztow[i,j] > sumaMax )
+                        {
+                            sumaMax = tablicaKosztow[i, j];
+                            poczatek = i;
+                            koniec = j;
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+            }
+            Wezel Pierwszy, Ostatni;
+            Sciezka S1;
+           
+                       
+                        Pierwszy = wezly[poczatek];
+                        Ostatni = wezly[koniec];
+                        S1 = new Sciezka(Pierwszy, Ostatni);
+                        S1.zwroc_ListaKrawedziSciezki = S1.wyznaczSciezke(Pierwszy, Ostatni, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami);
+            return S1.zwroc_ListaKrawedziSciezki;
+                    }
+
+        public void dodawanieWierzcholkow(int ilosc)
+        {
+            wezly.Clear();
+            Random rand = new Random();
+            int wspX, wspY;
+            for (int i = 0; i < ilosc; i++)
+            {
+                int idWezla = i + 1;
+
+                wspX = rand.Next(81);
+                wspY = rand.Next(81);
+                wezly.Add(new Wezel(idWezla, wspX, wspY));
+
+            }
+            liczbaWezlow = wezly.Count;
+
+            for (int i = 0; i < sciezki.Count; i++)
+            {
+                for (int j = 0; j < liczbaWezlow; j++)
+                {
+                    if (sciezki[i].Wezel1.idWezla == wezly[j].idWezla)
+                    {
+                        sciezki[i].Wezel1 = wezly[j];
+                    }
+                    if (sciezki[i].Wezel2.idWezla == wezly[j].idWezla)
+                    {
+                        sciezki[i].Wezel2 = wezly[j];
+                    }
+                }
+
+            }
+        }
+
+        public void losoweKrawedzie(int ilosc)
+        {
+            krawedzie.Clear();
+            Random rand = new Random();
+
+            int ax, by = 0, koniec = 0;
+
+            for (int i = 0; i < ilosc; i++)
+            {
+                koniec = 0;
+                ax = rand.Next(liczbaWezlow);
+                while (koniec == 0)
+                {
+                    by = rand.Next(liczbaWezlow);
+                    if (by != ax)
+                    {
+                        koniec = 1;
+                    }
+                }
+                krawedzie.Add(new Lacze(i + 1, wezly[ax], wezly[by]));
+                wezly[ax].listaKrawedzi.Add(krawedzie[i]);
+                wezly[by].listaKrawedzi.Add(krawedzie[i]);
+            }
+            liczbaLaczy = krawedzie.Count;
+            wylosujWagiLaczy();
+            krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
+            algorytmFloyda();
+
+        }
+
+        public void wagiOdleglosc()
+        {
+            foreach (Lacze krawedz in krawedzie)
+            {
+                krawedz.Waga = (float)Math.Sqrt(Math.Pow(krawedz.Wezel1.wspX - krawedz.Wezel2.wspX, 2) + Math.Pow(krawedz.Wezel1.wspY - krawedz.Wezel2.wspY, 2));
+            }
+        }
+
+        public void krawedzieProjekt()
+        {
+            int idKraw = 1;
+            krawedzie.Clear();
+            for (int i = 0; i < liczbaWezlow; i++)
+            {
+                for (int j = i + 1; j < liczbaWezlow; j++)
+                {
+                    krawedzie.Add(new Lacze(idKraw, wezly[i], wezly[j])); //Dodajemy nowa krawedz
+                    krawedzie[idKraw - 1].Waga = (float)Math.Sqrt(Math.Pow(krawedzie[idKraw - 1].Wezel1.wspX - krawedzie[idKraw - 1].Wezel2.wspX, 2) +
+                        Math.Pow(krawedzie[idKraw - 1].Wezel1.wspY - krawedzie[idKraw - 1].Wezel2.wspY, 2)); //Ustawiamy koszt
+                    //nieposortowane.Add(new Lacze(idKraw, wezly[i], wezly[j])); //Dodajemy nowa krawedz
+                   // nieposortowane[idKraw - 1].Waga = (float)Math.Sqrt(Math.Pow(krawedzie[idKraw - 1].Wezel1.wspX - krawedzie[idKraw - 1].Wezel2.wspX, 2) +
+                       // Math.Pow(krawedzie[idKraw - 1].Wezel1.wspY - krawedzie[idKraw - 1].Wezel2.wspY, 2)); //Ustawiamy koszt
+                    idKraw++;
+                }
+            }
+           // krawedzie.Sort((x, y) => x.Waga.CompareTo(y.Waga));
+
+
+        }
+
+        public bool poprawnoscSciezkiDijkstry()
+        {
+            algorytmFloyda();
+
+            int i = sciezki[0].Wezel1.idWezla;
+            int j = sciezki[0].Wezel2.idWezla;
+            if (i != j)
+            {
+                if (tablicaKierowaniaWezlami[i - 1, j - 1] == null && (j != i))
+                    return false;
+                else
+                    return true;
+
+            }
+            else
+
+                return true;
+
+        }
+
     }
 
+}

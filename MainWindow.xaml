@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <StackPanel Name = "panel">
-        <Canvas x:Name="canvas" Height="320" Margin="0,0,0,0"/>
+        <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="314" VerticalAlignment="Top" Width="507" Margin="0,0,0,-0.6"/>
+
 
     </StackPanel>
 </Window>

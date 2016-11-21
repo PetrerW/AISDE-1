@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace AISDE
 {
     public class Sciezka
@@ -76,16 +77,20 @@ namespace AISDE
         public List<Lacze> wyznaczSciezke(Wezel Skad, Wezel Dokad, Lacze[,] tablicaKierowaniaLaczami, Wezel[,] tablicaKierowaniaWezlami)
         {
             List<Lacze> tempList = new List<Lacze>();
-            if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] == Dokad)
+            if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] != null)
             {
-                tempList.Add(tablicaKierowaniaLaczami[Skad.idWezla - 1, Dokad.idWezla - 1]);
-            }
-            else
-            {
-                //Dodajemy sciezke z Skad do punktu posredniego, wskazanego przez tablice kierowania Wezlami
-                tempList.AddRange(wyznaczSciezke(Skad, tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
-                //Potem doklejamy drugi koniec listy, liste krawedzi z posredniego do koncowego
-                tempList.AddRange(wyznaczSciezke(tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], Dokad, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
+
+                if (tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1] == Dokad)
+                {
+                    tempList.Add(tablicaKierowaniaLaczami[Skad.idWezla - 1, Dokad.idWezla - 1]);
+                }
+                else
+                {
+                    //Dodajemy sciezke z Skad do punktu posredniego, wskazanego przez tablice kierowania Wezlami
+                    tempList.AddRange(wyznaczSciezke(Skad, tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
+                    //Potem doklejamy drugi koniec listy, liste krawedzi z posredniego do koncowego
+                    tempList.AddRange(wyznaczSciezke(tablicaKierowaniaWezlami[Skad.idWezla - 1, Dokad.idWezla - 1], Dokad, tablicaKierowaniaLaczami, tablicaKierowaniaWezlami));
+                }
             }
             return tempList;
         }
